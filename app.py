@@ -2,22 +2,13 @@ import os
 import logging
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask_login import LoginManager
-from flask_mail import Mail
-
+from extensions import db, login_manager, mail
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-class Base(DeclarativeBase):
-    pass
-
-
-db = SQLAlchemy(model_class=Base)
 # Create the app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
@@ -51,12 +42,9 @@ app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
 
-# Initialize extensions
+# Initialize extensions with the app
 db.init_app(app)
-mail = Mail(app)
-
-# Setup Flask-Login
-login_manager = LoginManager()
+mail.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
@@ -66,21 +54,17 @@ with app.app_context():
     import models
     db.create_all()
 
-    from models import User
-    
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
-
 # Register blueprints
 from routes.auth import auth
 from routes.dashboard import dashboard
 from routes.analysis import analysis
 from routes.vulnerabilities import vulnerabilities
 from routes.incident_response import incident_response
+from routes.home import home_bp
 
 app.register_blueprint(auth, url_prefix='/auth')
 app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(analysis, url_prefix='/analysis')
 app.register_blueprint(vulnerabilities, url_prefix='/vulnerabilities')
 app.register_blueprint(incident_response, url_prefix='/incidents')
+app.register_blueprint(home_bp)

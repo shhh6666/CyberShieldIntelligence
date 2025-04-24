@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout_with_home.html" %}
 
 {% block title %}User Behavior Analysis - CyberTech{% endblock %}
 
@@ -341,7 +341,7 @@
                         </div>
                         <div class="card-body">
                             <div style="height: 250px;">
-                                <canvas id="activityTypeChart" data-activities="{{ activity_types|tojson }}"></canvas>
+                                <canvas id="activityTypeChart" data-activities="{{ activity_types|default({})|tojson }}"></canvas>
                             </div>
                         </div>
                     </div>
@@ -357,7 +357,7 @@
                         </div>
                         <div class="card-body">
                             <div style="height: 250px;">
-                                <canvas id="activityTimelineChart" data-hourly-activity="{{ hourly_activity|tojson }}"></canvas>
+                                <canvas id="activityTimelineChart" data-hourly-activity="{{ hourly_activity|default([])|tojson }}"></canvas>
                             </div>
                         </div>
                     </div>
@@ -370,7 +370,7 @@
                             <h3>Unusual Patterns</h3>
                         </div>
                         <div class="card-body">
-                            <div id="behavior-patterns" data-patterns="{{ unusual_patterns|tojson }}">
+                            <div id="behavior-patterns" data-patterns="{{ unusual_patterns|default([])|tojson }}">
                                 {% if unusual_patterns %}
                                     {% for pattern in unusual_patterns %}
                                         <div class="behavior-pattern behavior-pattern-{{ pattern.severity }}">
@@ -441,7 +441,7 @@
                         
                         <div class="filter-group ml-auto">
                             <span class="filter-label">Showing:</span>
-                            <span id="activity-count" class="badge badge-primary">{{ user_activities|length }}</span>
+                            <span id="activity-count" class="badge badge-primary">{{ user_activities|default([])|length }}</span>
                         </div>
                     </div>
                     

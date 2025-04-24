@@ -22,6 +22,13 @@
         <div class="sidebar-heading">Core</div>
         
         <div class="nav-item">
+            <a href="{{ url_for('home.index') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-home"></i></span>
+                <span class="nav-text">Home</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
             <a href="{{ url_for('dashboard.home') }}" class="nav-link active">
                 <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
                 <span class="nav-text">Dashboard</span>

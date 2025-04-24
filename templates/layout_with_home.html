@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}CyberTech - Cybersecurity Breach Detection System{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logo.svg') }}">
+    
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <!-- Add manifest for PWA support -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <!-- Add meta tags for PWA -->
+    <meta name="theme-color" content="#151920">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CyberTech">
+    
+    <!-- Offline caching -->
+    <link rel="preload" href="{{ url_for('static', filename='css/main.css') }}" as="style">
+    <link rel="preload" href="{{ url_for('static', filename='js/main.js') }}" as="script">
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="{{ url_for('home.index') }}">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="CyberTech Logo">
+                        <span>CyberTech</span>
+                    </a>
+                </div>
+                
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="{{ url_for('home.index') }}" class="nav-link {% if request.endpoint == 'home.index' %}active{% endif %}">Home</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a href="{{ url_for('dashboard.home') }}" class="nav-link {% if 'dashboard' in request.endpoint %}active{% endif %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('analysis.anomaly_detection') }}" class="nav-link {% if 'analysis' in request.endpoint %}active{% endif %}">Analysis</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('incident_response.manage_incidents') }}" class="nav-link {% if 'incident_response' in request.endpoint %}active{% endif %}">Incidents</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">About</a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    {% if current_user.is_authenticated %}
+                        <div class="user-dropdown">
+                            <button class="dropdown-toggle">
+                                <div class="user-avatar">{{ current_user.username[0] }}</div>
+                                <span class="username">{{ current_user.username }}</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="{{ url_for('dashboard.home') }}" class="dropdown-item">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fas fa-user-cog"></i> Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ url_for('auth.logout') }}" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Sign In</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
+                    {% endif %}
+                </div>
+                
+                <button class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    {% block content %}
+    <!-- Main content will go here -->
+    {% endblock %}
+    
+    <!-- Footer -->
+    {% if not hide_footer %}
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="{{ url_for('home.index') }}">Home</a>
+                <a href="#">About</a>
+                <a href="#">Documentation</a>
+                <a href="#">Support</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; {{ now.year }} Simbarashe Chimbera. All rights reserved. | CyberTech&trade; Breach Detection System
+            </div>
+        </div>
+    </footer>
+    {% endif %}
+    
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app-cache.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/offline.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} flash-message">
+                        {{ message }}
+                        <button type="button" class="alert-close">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Offline status indicator -->
+    <div id="offline-status" class="offline-status" style="display: none;">
+        <i class="fas fa-wifi-slash"></i> You are currently offline
+    </div>
+</body>
+</html>

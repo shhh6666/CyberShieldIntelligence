@@ -1,0 +1,467 @@
+{% extends "layout.html" %}
+
+{% block title %}Incident Response - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    .incident-card {
+        border-left: 5px solid var(--secondary-dark);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .incident-card.critical {
+        border-left-color: var(--critical);
+    }
+    
+    .incident-card.high {
+        border-left-color: var(--high);
+    }
+    
+    .incident-card.medium {
+        border-left-color: var(--medium);
+    }
+    
+    .incident-card.low {
+        border-left-color: var(--low);
+    }
+    
+    .incident-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--tertiary-dark);
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .incident-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .incident-title i {
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+    }
+    
+    .incident-body {
+        padding: 1rem;
+    }
+    
+    .incident-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .incident-detail {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .detail-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .detail-value {
+        font-weight: 500;
+    }
+    
+    .incident-description {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    
+    .incident-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-open {
+        background-color: rgba(67, 97, 238, 0.15);
+        color: var(--primary-accent);
+    }
+    
+    .status-in-progress {
+        background-color: rgba(240, 136, 62, 0.15);
+        color: var(--warning-color);
+    }
+    
+    .status-resolved {
+        background-color: rgba(63, 185, 80, 0.15);
+        color: var(--success-color);
+    }
+    
+    .incident-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .filter-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+    
+    .create-incident-btn {
+        margin-left: auto;
+    }
+    
+    @media (max-width: 768px) {
+        .incident-filters {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .create-incident-btn {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="sidebar-brand-text">CyberTech</div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Core</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.home') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.dataset_manager') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-database"></i></span>
+                <span class="nav-text">Datasets</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Security</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.anomaly_detection') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-search"></i></span>
+                <span class="nav-text">Anomaly Detection</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.user_behavior') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-text">User Behavior</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('vulnerabilities.vulnerability_management') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-bug"></i></span>
+                <span class="nav-text">Vulnerabilities</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('incident_response.manage_incidents') }}" class="nav-link active">
+                <span class="nav-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <span class="nav-text">Incident Response</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Account</div>
+        
+        <div class="nav-item">
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-cog"></i></span>
+                <span class="nav-text">Settings</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Topbar -->
+        <div class="topbar">
+            <button class="topbar-toggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search topbar-search-icon"></i>
+                <input type="text" class="topbar-search-input" placeholder="Search incidents...">
+            </div>
+            
+            <div class="topbar-nav">
+                <div class="topbar-nav-item">
+                    <a href="#" class="topbar-nav-link">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    {% if recent_alerts and recent_alerts|length > 0 %}
+                    <span class="topbar-nav-badge">{{ recent_alerts|length }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        {{ current_user.username[0] }}
+                    </div>
+                    <div class="topbar-user-info">
+                        <div class="topbar-user-name">{{ current_user.username }}</div>
+                        <div class="topbar-user-role">{% if current_user.is_admin %}Administrator{% else %}User{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="container">
+            <h1 class="mb-4">Incident Response</h1>
+            
+            <!-- Filters and Create Incident Button -->
+            <div class="incident-filters">
+                <div class="filter-group">
+                    <span class="filter-label">Status:</span>
+                    <select class="form-control form-control-sm" id="status-filter">
+                        <option value="all">All Status</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <span class="filter-label">Severity:</span>
+                    <select class="form-control form-control-sm" id="severity-filter">
+                        <option value="all">All Severity</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <span class="filter-label">Sort By:</span>
+                    <select class="form-control form-control-sm" id="sort-filter">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="severity">Severity</option>
+                    </select>
+                </div>
+                
+                <a href="{{ url_for('incident_response.create_incident') }}" class="btn btn-primary create-incident-btn">
+                    <i class="fas fa-plus"></i> Create Incident
+                </a>
+            </div>
+            
+            <!-- Incident List -->
+            <div class="incidents-container">
+                {% if incidents %}
+                    {% for incident in incidents %}
+                        <div class="card incident-card {{ incident.severity }}" data-severity="{{ incident.severity }}" data-status="{{ incident.status }}">
+                            <div class="incident-header">
+                                <div class="incident-title">
+                                    {% if incident.severity == 'critical' %}
+                                        <i class="fas fa-exclamation-circle text-critical"></i>
+                                    {% elif incident.severity == 'high' %}
+                                        <i class="fas fa-exclamation-triangle text-high"></i>
+                                    {% elif incident.severity == 'medium' %}
+                                        <i class="fas fa-exclamation text-medium"></i>
+                                    {% else %}
+                                        <i class="fas fa-info-circle text-low"></i>
+                                    {% endif %}
+                                    {{ incident.title }}
+                                </div>
+                                <span class="status-badge status-{{ incident.status|replace('_', '-') }}">{{ incident.status|replace('_', ' ')|upper }}</span>
+                            </div>
+                            <div class="incident-body">
+                                <div class="incident-info">
+                                    <div class="incident-detail">
+                                        <span class="detail-label">Severity</span>
+                                        <span class="detail-value">{{ incident.severity|upper }}</span>
+                                    </div>
+                                    <div class="incident-detail">
+                                        <span class="detail-label">Created</span>
+                                        <span class="detail-value">{{ incident.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                    </div>
+                                    {% if incident.resolved_at %}
+                                    <div class="incident-detail">
+                                        <span class="detail-label">Resolved</span>
+                                        <span class="detail-value">{{ incident.resolved_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="incident-description">
+                                    {{ incident.description }}
+                                </div>
+                                
+                                <div class="incident-actions">
+                                    <a href="{{ url_for('incident_response.incident_details', incident_id=incident.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+                                    
+                                    {% if incident.status == 'open' %}
+                                        <button class="btn btn-sm btn-outline-warning update-status-btn" data-incident-id="{{ incident.id }}" data-status="in_progress">
+                                            <i class="fas fa-play"></i> Start Working
+                                        </button>
+                                    {% elif incident.status == 'in_progress' %}
+                                        <button class="btn btn-sm btn-outline-success update-status-btn" data-incident-id="{{ incident.id }}" data-status="resolved">
+                                            <i class="fas fa-check"></i> Mark Resolved
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center p-5">
+                        <i class="fas fa-clipboard-check fa-3x mb-3 text-secondary"></i>
+                        <h3 class="text-secondary">No Incidents</h3>
+                        <p>There are currently no security incidents to respond to.</p>
+                        <a href="{{ url_for('incident_response.create_incident') }}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Create Incident
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Status filter functionality
+        const statusFilter = document.getElementById('status-filter');
+        const severityFilter = document.getElementById('severity-filter');
+        const sortFilter = document.getElementById('sort-filter');
+        const searchInput = document.querySelector('.topbar-search-input');
+        
+        // Apply filters when changed
+        statusFilter.addEventListener('change', applyFilters);
+        severityFilter.addEventListener('change', applyFilters);
+        sortFilter.addEventListener('change', applyFilters);
+        searchInput.addEventListener('input', applyFilters);
+        
+        // Update status buttons
+        const updateStatusBtns = document.querySelectorAll('.update-status-btn');
+        updateStatusBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const incidentId = this.getAttribute('data-incident-id');
+                const status = this.getAttribute('data-status');
+                
+                // Call update function
+                updateIncidentStatus(incidentId, status);
+            });
+        });
+        
+        // Apply all filters
+        function applyFilters() {
+            const selectedStatus = statusFilter.value;
+            const selectedSeverity = severityFilter.value;
+            const searchQuery = searchInput.value.toLowerCase();
+            
+            const incidents = document.querySelectorAll('.incident-card');
+            
+            incidents.forEach(incident => {
+                const incidentSeverity = incident.getAttribute('data-severity');
+                const incidentStatus = incident.getAttribute('data-status');
+                const incidentText = incident.textContent.toLowerCase();
+                
+                // Check if incident matches all filters
+                const matchesStatus = selectedStatus === 'all' || incidentStatus === selectedStatus;
+                const matchesSeverity = selectedSeverity === 'all' || incidentSeverity === selectedSeverity;
+                const matchesSearch = searchQuery === '' || incidentText.includes(searchQuery);
+                
+                // Show or hide based on filter matches
+                incident.style.display = (matchesStatus && matchesSeverity && matchesSearch) ? 'block' : 'none';
+            });
+            
+            // Apply sorting
+            sortIncidents(sortFilter.value);
+        }
+        
+        // Sort incidents based on selected option
+        function sortIncidents(sortOption) {
+            const incidentsContainer = document.querySelector('.incidents-container');
+            const incidents = Array.from(document.querySelectorAll('.incident-card:not([style*="display: none"])'));
+            
+            // Sort incidents based on selected option
+            if (sortOption === 'newest') {
+                incidents.sort((a, b) => {
+                    const dateA = new Date(a.querySelector('.detail-value').textContent);
+                    const dateB = new Date(b.querySelector('.detail-value').textContent);
+                    return dateB - dateA;
+                });
+            } else if (sortOption === 'oldest') {
+                incidents.sort((a, b) => {
+                    const dateA = new Date(a.querySelector('.detail-value').textContent);
+                    const dateB = new Date(b.querySelector('.detail-value').textContent);
+                    return dateA - dateB;
+                });
+            } else if (sortOption === 'severity') {
+                const severityOrder = {'critical': 0, 'high': 1, 'medium': 2, 'low': 3};
+                incidents.sort((a, b) => {
+                    const severityA = a.getAttribute('data-severity');
+                    const severityB = b.getAttribute('data-severity');
+                    return severityOrder[severityA] - severityOrder[severityB];
+                });
+            }
+            
+            // Re-append sorted incidents
+            incidents.forEach(incident => {
+                incidentsContainer.appendChild(incident);
+            });
+        }
+    });
+</script>
+{% endblock %}

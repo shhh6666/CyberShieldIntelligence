@@ -1,0 +1,530 @@
+{% extends "layout.html" %}
+
+{% block title %}User Behavior Analysis - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    .behavior-container {
+        margin-bottom: 2rem;
+    }
+    
+    .activity-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .activity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .activity-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+    }
+    
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: rgba(88, 166, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: var(--primary-accent);
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .activity-icon.login {
+        color: var(--primary-accent);
+        background: rgba(88, 166, 255, 0.1);
+    }
+    
+    .activity-icon.logout {
+        color: var(--warning-color);
+        background: rgba(240, 136, 62, 0.1);
+    }
+    
+    .activity-icon.file_upload {
+        color: var(--success-color);
+        background: rgba(63, 185, 80, 0.1);
+    }
+    
+    .activity-icon.analysis {
+        color: var(--info-color);
+        background: rgba(137, 87, 229, 0.1);
+    }
+    
+    .activity-content {
+        flex: 1;
+    }
+    
+    .activity-title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .activity-meta {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .behavior-pattern {
+        display: flex;
+        align-items: flex-start;
+        padding: 1rem;
+        border-radius: 6px;
+        background-color: var(--tertiary-dark);
+        margin-bottom: 1rem;
+    }
+    
+    .behavior-pattern-normal {
+        border-left: 4px solid var(--success-color);
+    }
+    
+    .behavior-pattern-suspicious {
+        border-left: 4px solid var(--warning-color);
+    }
+    
+    .behavior-pattern-anomalous {
+        border-left: 4px solid var(--danger-color);
+    }
+    
+    .behavior-icon {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    
+    .behavior-content {
+        flex: 1;
+    }
+    
+    .behavior-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .behavior-desc {
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+    
+    .behavior-actions {
+        margin-left: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .gauge-container {
+        position: relative;
+        width: 200px;
+        height: 100px;
+        margin: 0 auto;
+    }
+    
+    .gauge-value {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+    
+    .gauge-label {
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .activity-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .filter-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+        .activity-filters {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .activity-meta {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="sidebar-brand-text">CyberTech</div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Core</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.home') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.dataset_manager') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-database"></i></span>
+                <span class="nav-text">Datasets</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Security</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.anomaly_detection') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-search"></i></span>
+                <span class="nav-text">Anomaly Detection</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.user_behavior') }}" class="nav-link active">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-text">User Behavior</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('vulnerabilities.vulnerability_management') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-bug"></i></span>
+                <span class="nav-text">Vulnerabilities</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('incident_response.manage_incidents') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <span class="nav-text">Incident Response</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Account</div>
+        
+        <div class="nav-item">
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-cog"></i></span>
+                <span class="nav-text">Settings</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Topbar -->
+        <div class="topbar">
+            <button class="topbar-toggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search topbar-search-icon"></i>
+                <input type="text" class="topbar-search-input" id="activity-search" placeholder="Search activities...">
+            </div>
+            
+            <div class="topbar-nav">
+                <div class="topbar-nav-item">
+                    <a href="#" class="topbar-nav-link">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    {% if recent_alerts and recent_alerts|length > 0 %}
+                    <span class="topbar-nav-badge">{{ recent_alerts|length }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        {{ current_user.username[0] }}
+                    </div>
+                    <div class="topbar-user-info">
+                        <div class="topbar-user-name">{{ current_user.username }}</div>
+                        <div class="topbar-user-role">{% if current_user.is_admin %}Administrator{% else %}User{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="container">
+            <h1 class="mb-4">User Behavior Analysis</h1>
+            
+            <!-- Overview Cards -->
+            <div class="row">
+                <!-- Risk Score -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Risk Assessment</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="gauge-container">
+                                <canvas id="riskScoreGauge" data-score="{{ risk_score|default(25) }}"></canvas>
+                                <div id="risk-score-value">{{ risk_score|default(25) }}</div>
+                            </div>
+                            <div class="gauge-label" id="risk-level">
+                                {% if risk_score|default(25) >= 70 %}
+                                    High Risk
+                                {% elif risk_score|default(25) >= 40 %}
+                                    Medium Risk
+                                {% else %}
+                                    Low Risk
+                                {% endif %}
+                            </div>
+                            <p class="mt-3 text-secondary">
+                                {% if risk_score|default(25) >= 70 %}
+                                    User behavior shows significant deviations from normal patterns. Immediate investigation recommended.
+                                {% elif risk_score|default(25) >= 40 %}
+                                    User behavior shows some unusual patterns. Monitoring recommended.
+                                {% else %}
+                                    User behavior appears normal. No immediate concerns detected.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Types -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Activity Distribution</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 250px;">
+                                <canvas id="activityTypeChart" data-activities="{{ activity_types|tojson }}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Activity Timeline -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Activity Timeline</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 250px;">
+                                <canvas id="activityTimelineChart" data-hourly-activity="{{ hourly_activity|tojson }}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Behavior Patterns -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Unusual Patterns</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="behavior-patterns" data-patterns="{{ unusual_patterns|tojson }}">
+                                {% if unusual_patterns %}
+                                    {% for pattern in unusual_patterns %}
+                                        <div class="behavior-pattern behavior-pattern-{{ pattern.severity }}">
+                                            <div class="behavior-icon">
+                                                {% if pattern.severity == 'high' %}
+                                                    <i class="fas fa-exclamation-triangle text-danger"></i>
+                                                {% elif pattern.severity == 'medium' %}
+                                                    <i class="fas fa-exclamation-circle text-warning"></i>
+                                                {% else %}
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="behavior-content">
+                                                <div class="behavior-title">{{ pattern.type }}</div>
+                                                <div class="behavior-desc">{{ pattern.description }}</div>
+                                            </div>
+                                            <div class="behavior-actions">
+                                                <button class="btn btn-sm btn-outline-primary investigate-pattern" data-pattern-id="{{ pattern.type }}">
+                                                    Investigate
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-center p-3">
+                                        <i class="fas fa-check-circle fa-2x mb-3 text-success"></i>
+                                        <p>No unusual behavior patterns detected.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Activity History -->
+            <div class="card mb-4">
+                <div class="card-header activity-header">
+                    <h3>Activity History</h3>
+                    <button class="btn btn-outline-primary" id="generate-report-btn">
+                        <i class="fas fa-file-pdf"></i> Generate PDF Report
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="activity-filters">
+                        <div class="filter-group">
+                            <span class="filter-label">Time Range:</span>
+                            <select class="form-control form-control-sm" id="date-range">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30" selected>Last 30 Days</option>
+                                <option value="90">Last 90 Days</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <span class="filter-label">Activity Type:</span>
+                            <select class="form-control form-control-sm" id="activity-type">
+                                <option value="all">All Activities</option>
+                                <option value="login">Login</option>
+                                <option value="logout">Logout</option>
+                                <option value="file_upload">File Upload</option>
+                                <option value="analysis">Analysis</option>
+                                <option value="dataset_access">Dataset Access</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group ml-auto">
+                            <span class="filter-label">Showing:</span>
+                            <span id="activity-count" class="badge badge-primary">{{ user_activities|length }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity List -->
+                    {% if user_activities %}
+                        <div class="activities-container">
+                            {% for activity in user_activities %}
+                                <div class="activity-item" 
+                                     data-activity-type="{{ activity.activity_type }}"
+                                     data-timestamp="{{ activity.timestamp }}">
+                                    <div class="activity-icon {{ activity.activity_type }}">
+                                        {% if activity.activity_type == 'login' %}
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        {% elif activity.activity_type == 'logout' %}
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        {% elif activity.activity_type == 'file_upload' %}
+                                            <i class="fas fa-upload"></i>
+                                        {% elif activity.activity_type == 'analysis' %}
+                                            <i class="fas fa-chart-bar"></i>
+                                        {% elif activity.activity_type == 'dataset_access' %}
+                                            <i class="fas fa-database"></i>
+                                        {% elif activity.activity_type == 'dataset_download' %}
+                                            <i class="fas fa-download"></i>
+                                        {% elif activity.activity_type == 'dataset_delete' %}
+                                            <i class="fas fa-trash-alt"></i>
+                                        {% else %}
+                                            <i class="fas fa-clipboard-list"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">
+                                            {% if activity.activity_type == 'login' %}
+                                                User login
+                                            {% elif activity.activity_type == 'logout' %}
+                                                User logout
+                                            {% elif activity.activity_type == 'file_upload' %}
+                                                File uploaded
+                                            {% elif activity.activity_type == 'analysis' %}
+                                                Analysis performed
+                                            {% elif activity.activity_type == 'dataset_access' %}
+                                                Dataset accessed
+                                            {% elif activity.activity_type == 'dataset_download' %}
+                                                Dataset downloaded
+                                            {% elif activity.activity_type == 'dataset_delete' %}
+                                                Dataset deleted
+                                            {% else %}
+                                                {{ activity.activity_type|replace('_', ' ')|title }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="activity-meta">
+                                            <span>
+                                                <i class="far fa-clock"></i> {{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                            </span>
+                                            <span>
+                                                <i class="fas fa-globe"></i> {{ activity.ip_address }}
+                                            </span>
+                                            {% if activity.details %}
+                                                <span>
+                                                    <i class="fas fa-info-circle"></i> {{ activity.details }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center p-5" id="no-activities-message">
+                            <i class="fas fa-history fa-3x mb-3 text-secondary"></i>
+                            <h3 class="text-secondary">No Activity History</h3>
+                            <p>User activity will be recorded here as they interact with the system.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Message Container for AJAX responses -->
+            <div id="message-container"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/user_behavior.js') }}"></script>
+{% endblock %}

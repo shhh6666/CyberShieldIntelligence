@@ -17,6 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
+    // Make sure the home tab works correctly
+    const homeTab = document.getElementById('home-tab');
+    if (homeTab) {
+        homeTab.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = this.getAttribute('href');
+        });
+    }
+    
     // Initialize navigation menu
     initNavigation();
     

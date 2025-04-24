@@ -1,0 +1,382 @@
+{% extends "layout.html" %}
+
+{% block title %}Home - CyberTech{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        position: relative;
+        padding: 4rem 0;
+        margin-bottom: 2rem;
+        background-color: var(--secondary-dark);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.1;
+        background-image: url("{{ url_for('static', filename='images/cyber_bg.svg') }}");
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--primary-accent);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+    
+    .feature-card {
+        background-color: var(--tertiary-dark);
+        border-radius: 8px;
+        padding: 1.5rem;
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-bottom: 3px solid var(--border-color);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-bottom-color: var(--primary-accent);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1.25rem;
+        color: var(--primary-accent);
+    }
+    
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+    
+    .cta-section {
+        background-color: var(--tertiary-dark);
+        border-radius: 8px;
+        padding: 3rem;
+        text-align: center;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+    }
+    
+    .cta-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .cta-description {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .btn-cta {
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .testimonial-card {
+        background-color: var(--tertiary-dark);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .testimonial-text {
+        font-style: italic;
+        color: var(--text-secondary);
+        margin-bottom: 1.25rem;
+        position: relative;
+        padding: 0 1rem;
+    }
+    
+    .testimonial-text::before,
+    .testimonial-text::after {
+        content: '"';
+        font-size: 1.5rem;
+        font-family: Georgia, serif;
+        color: var(--primary-accent);
+        opacity: 0.5;
+    }
+    
+    .testimonial-text::before {
+        position: absolute;
+        left: -0.5rem;
+        top: -0.5rem;
+    }
+    
+    .testimonial-text::after {
+        position: relative;
+        line-height: 0;
+    }
+    
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+    
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--primary-accent);
+        margin-right: 1rem;
+    }
+    
+    .author-name {
+        font-weight: 600;
+    }
+    
+    .author-title {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+    
+    .features-section,
+    .testimonials-section {
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    
+    .section-subtitle {
+        color: var(--text-secondary);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .offline-badge {
+        background-color: var(--success-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    
+    .offline-badge .offline-icon {
+        font-size: 0.7rem;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .feature-card {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-section {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">CyberTech Security Platform</h1>
+            <p class="hero-subtitle">Advanced cybersecurity breach detection with real-time monitoring, anomaly detection, and enhanced visualization capabilities. Keep your systems secure with our comprehensive security solution.</p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard.home') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+            {% else %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Sign In</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+                </div>
+            {% endif %}
+            <div class="mt-4">
+                <span class="offline-badge">
+                    <i class="fas fa-wifi offline-icon"></i> Offline Mode Available
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="section-title">Comprehensive Security Features</h2>
+        <p class="section-subtitle">Empower your security team with advanced tools and capabilities</p>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="feature-title">Anomaly Detection</h3>
+                    <p class="feature-description">Identify suspicious patterns and potential security breaches with our machine learning-powered anomaly detection system.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="feature-title">User Behavior Analysis</h3>
+                    <p class="feature-description">Monitor and analyze user activities to detect unusual behavior patterns that might indicate account compromise.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <h3 class="feature-title">Vulnerability Management</h3>
+                    <p class="feature-description">Scan your systems for vulnerabilities, prioritize risks, and get actionable remediation steps to secure your infrastructure.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="feature-title">Incident Response</h3>
+                    <p class="feature-description">Streamline your incident response workflow with structured processes, collaboration tools, and status tracking.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Advanced Analytics</h3>
+                    <p class="feature-description">Gain insights into your security posture with comprehensive dashboards, visualization tools, and trend analysis.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <h3 class="feature-title">Offline Capability</h3>
+                    <p class="feature-description">Continue your security operations even without internet connectivity with our robust offline mode and data caching.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonials Section -->
+    <div class="testimonials-section">
+        <h2 class="section-title">What Our Users Say</h2>
+        <p class="section-subtitle">Security professionals trust CyberTech to keep their systems secure</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        CyberTech's anomaly detection system has been a game changer for our security operations. We detected several potential breaches that would have gone unnoticed with our previous tools.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div>
+                            <div class="author-name">Jane Doe</div>
+                            <div class="author-title">CISO, Tech Enterprise</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        The offline capability allows our security team to continue operations even during network outages. It's an essential feature that we didn't know we needed until we had it.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MS</div>
+                        <div>
+                            <div class="author-name">Mike Smith</div>
+                            <div class="author-title">Security Analyst, Financial Services</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2 class="cta-title">Ready to Secure Your Systems?</h2>
+        <p class="cta-description">Join thousands of security professionals who trust CyberTech to protect their infrastructure from evolving cyber threats.</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard.home') }}" class="btn btn-primary btn-cta">Go to Dashboard</a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-cta">Get Started Today</a>
+        {% endif %}
+    </div>
+    
+    <!-- Footer -->
+    <footer class="text-center mt-5 pb-4">
+        <div class="text-secondary mb-3">
+            <small>© 2025 CyberTech by Simbarashe Chimbera. All rights reserved.</small>
+        </div>
+        <div>
+            <small class="text-secondary">Secure your systems, sleep better at night.</small>
+        </div>
+    </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/home-tab.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block title %}Offline Mode - CyberTech{% endblock %}
+
+{% block extra_css %}
+<style>
+    .offline-container {
+        text-align: center;
+        padding: 3rem 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .offline-icon {
+        font-size: 4rem;
+        color: var(--warning-color);
+        margin-bottom: 2rem;
+    }
+    
+    .offline-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .offline-message {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .cached-data-card {
+        background-color: var(--tertiary-dark);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+    
+    .cached-data-title {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .cached-data-title i {
+        margin-right: 0.75rem;
+        color: var(--primary-accent);
+    }
+    
+    .cached-data-info {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .refresh-btn {
+        margin-top: 1rem;
+    }
+    
+    .offline-footer {
+        margin-top: 3rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="offline-container">
+        <div class="offline-icon">
+            <i class="fas fa-wifi"></i>
+        </div>
+        
+        <h1 class="offline-title">You're Currently Offline</h1>
+        <p class="offline-message">Don't worry, you can still access cached data and continue working. Your changes will be synchronized when you're back online.</p>
+        
+        <div class="cached-data-section">
+            <h2 class="mb-4">Available Cached Data</h2>
+            
+            <div class="cached-data-card">
+                <div class="cached-data-title">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard Overview
+                </div>
+                <p class="cached-data-info">Last updated: <span id="dashboard-last-updated">-</span></p>
+                <a href="{{ url_for('dashboard.home') }}" class="btn btn-sm btn-outline-primary">Access Dashboard</a>
+            </div>
+            
+            <div class="cached-data-card">
+                <div class="cached-data-title">
+                    <i class="fas fa-database"></i> Your Datasets
+                </div>
+                <p class="cached-data-info">Last updated: <span id="datasets-last-updated">-</span></p>
+                <a href="{{ url_for('dashboard.dataset_manager') }}" class="btn btn-sm btn-outline-primary">Manage Datasets</a>
+            </div>
+            
+            <div class="cached-data-card">
+                <div class="cached-data-title">
+                    <i class="fas fa-search"></i> Detection Results
+                </div>
+                <p class="cached-data-info">Last updated: <span id="detection-last-updated">-</span></p>
+                <a href="{{ url_for('analysis.anomaly_detection') }}" class="btn btn-sm btn-outline-primary">View Results</a>
+            </div>
+            
+            <div class="cached-data-card">
+                <div class="cached-data-title">
+                    <i class="fas fa-exclamation-triangle"></i> Incident Management
+                </div>
+                <p class="cached-data-info">Last updated: <span id="incidents-last-updated">-</span></p>
+                <a href="{{ url_for('incident_response.manage_incidents') }}" class="btn btn-sm btn-outline-primary">Manage Incidents</a>
+            </div>
+        </div>
+        
+        <button id="refresh-btn" class="btn btn-primary refresh-btn">
+            <i class="fas fa-sync-alt"></i> Check Connection
+        </button>
+        
+        <div class="offline-footer">
+            <p>CyberTech Offline Mode | © 2025 Simbarashe Chimbera</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const refreshBtn = document.getElementById('refresh-btn');
+        
+        // Get last update timestamps from localStorage
+        document.getElementById('dashboard-last-updated').textContent = 
+            localStorage.getItem('dashboard-last-updated') || 'No data available';
+        document.getElementById('datasets-last-updated').textContent = 
+            localStorage.getItem('datasets-last-updated') || 'No data available';
+        document.getElementById('detection-last-updated').textContent = 
+            localStorage.getItem('detection-last-updated') || 'No data available';
+        document.getElementById('incidents-last-updated').textContent = 
+            localStorage.getItem('incidents-last-updated') || 'No data available';
+        
+        // Check connection when refresh button is clicked
+        refreshBtn.addEventListener('click', function() {
+            refreshBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking...';
+            refreshBtn.disabled = true;
+            
+            // Try to fetch a small file to check connection
+            fetch('/ping')
+                .then(response => {
+                    if (response.ok) {
+                        // We're back online, redirect to home
+                        window.location.href = '/';
+                    } else {
+                        throw new Error('Server error');
+                    }
+                })
+                .catch(error => {
+                    console.log('Still offline:', error);
+                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Check Connection';
+                    refreshBtn.disabled = false;
+                    
+                    // Show alert that we're still offline
+                    alert('You are still offline. Please check your internet connection and try again.');
+                });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,6 +1,6 @@
-from flask import render_template
+from flask import render_template, current_app
 from flask_mail import Message
-from app import mail, app
+from extensions import mail
 import os
 
 def send_email(subject, recipients, html_body):
@@ -11,7 +11,7 @@ def send_email(subject, recipients, html_body):
         mail.send(msg)
         return True
     except Exception as e:
-        app.logger.error(f"Failed to send email: {str(e)}")
+        current_app.logger.error(f"Failed to send email: {str(e)}")
         return False
 
 def send_welcome_email(user):

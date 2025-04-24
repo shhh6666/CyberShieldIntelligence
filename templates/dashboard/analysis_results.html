@@ -878,16 +878,24 @@
             type: 'bar',
             data: {
                 labels: [
-                    {% for ip in ip_counts|default({}).keys() %}
-                        '{{ ip }}',
-                    {% endfor %}
+                    {% if ip_counts is defined %}
+                        {% for ip in ip_counts.keys() %}
+                            '{{ ip }}',
+                        {% endfor %}
+                    {% else %}
+                        'Unknown'
+                    {% endif %}
                 ],
                 datasets: [{
                     label: 'Anomalies Count',
                     data: [
-                        {% for count in ip_counts|default({}).values() %}
-                            {{ count }},
-                        {% endfor %}
+                        {% if ip_counts is defined %}
+                            {% for count in ip_counts.values() %}
+                                {{ count }},
+                            {% endfor %}
+                        {% else %}
+                            0
+                        {% endif %}
                     ],
                     backgroundColor: 'rgba(137, 87, 229, 0.7)',
                     borderColor: 'rgba(137, 87, 229, 1)',

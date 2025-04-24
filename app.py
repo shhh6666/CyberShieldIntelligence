@@ -26,9 +26,15 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # needed for url_for
 # Configure the database
 # Get database URL and fix it if needed
 database_url = os.environ.get("DATABASE_URL")
+
+# If DATABASE_URL is not set, use a default SQLite database for development
+if not database_url:
+    database_url = "sqlite:///cybersecurity.db"
+    print(f"DATABASE_URL environment variable not found, using default: {database_url}")
 # If URL starts with postgres://, SQLAlchemy in newer versions requires postgresql://
-if database_url and database_url.startswith('postgres://'):
+elif database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
 print(f"Using database URL: {database_url}")
 app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

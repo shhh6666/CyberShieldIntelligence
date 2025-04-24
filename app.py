@@ -69,3 +69,9 @@ app.register_blueprint(analysis, url_prefix='/analysis')
 app.register_blueprint(vulnerabilities, url_prefix='/vulnerabilities')
 app.register_blueprint(incident_response, url_prefix='/incidents')
 app.register_blueprint(home_bp)
+
+# Add global context processor for 'now' variable
+from datetime import datetime
+@app.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}

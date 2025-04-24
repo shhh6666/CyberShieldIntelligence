@@ -1,0 +1,1056 @@
+{% extends "layout.html" %}
+
+{% block title %}Analysis Results - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    .analysis-header {
+        margin-bottom: 2rem;
+    }
+    
+    .analysis-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .meta-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .meta-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .meta-value {
+        font-weight: 600;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .status-completed {
+        background-color: rgba(63, 185, 80, 0.15);
+        color: var(--success-color);
+    }
+    
+    .status-running {
+        background-color: rgba(240, 136, 62, 0.15);
+        color: var(--warning-color);
+    }
+    
+    .status-failed {
+        background-color: rgba(248, 81, 73, 0.15);
+        color: var(--danger-color);
+    }
+    
+    .status-pending {
+        background-color: rgba(137, 87, 229, 0.15);
+        color: var(--info-color);
+    }
+    
+    .anomaly-item {
+        border-left: 5px solid var(--secondary-dark);
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .anomaly-item.critical {
+        border-left-color: var(--critical);
+    }
+    
+    .anomaly-item.high {
+        border-left-color: var(--high);
+    }
+    
+    .anomaly-item.medium {
+        border-left-color: var(--medium);
+    }
+    
+    .anomaly-item.low {
+        border-left-color: var(--low);
+    }
+    
+    .anomaly-item.false-positive {
+        opacity: 0.7;
+        border-left-color: var(--text-secondary);
+    }
+    
+    .anomaly-header {
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--tertiary-dark);
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .anomaly-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .anomaly-body {
+        padding: 1rem;
+    }
+    
+    .anomaly-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .anomaly-detail {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .detail-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .anomaly-description {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    
+    .anomaly-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .summary-card {
+        margin-bottom: 2rem;
+    }
+    
+    .badge-critical, .badge-high, .badge-medium, .badge-low {
+        padding: 0.35rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .badge-critical {
+        background-color: rgba(255, 56, 96, 0.15);
+        color: var(--critical);
+    }
+    
+    .badge-high {
+        background-color: rgba(255, 157, 68, 0.15);
+        color: var(--high);
+    }
+    
+    .badge-medium {
+        background-color: rgba(255, 221, 87, 0.15);
+        color: var(--medium);
+    }
+    
+    .badge-low {
+        background-color: rgba(72, 199, 116, 0.15);
+        color: var(--low);
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    .anomaly-chart {
+        height: 300px;
+        margin-top: 1rem;
+    }
+    
+    .visualization-section {
+        margin-bottom: 2rem;
+    }
+    
+    .source-header {
+        margin-bottom: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+    
+    .source-header i {
+        margin-right: 0.75rem;
+        color: var(--primary-accent);
+    }
+    
+    .source-preview {
+        background-color: var(--tertiary-dark);
+        padding: 1rem;
+        border-radius: 6px;
+        max-height: 300px;
+        overflow-y: auto;
+        font-family: monospace;
+        line-height: 1.5;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .summary-list {
+        margin-bottom: 1rem;
+    }
+    
+    .summary-list-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-list-item i {
+        margin-right: 0.75rem;
+        margin-top: 0.25rem;
+        flex-shrink: 0;
+    }
+    
+    .false-positive-badge {
+        display: none;
+        margin-left: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        background-color: rgba(155, 155, 155, 0.15);
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        border-radius: 3px;
+    }
+    
+    .anomaly-item.false-positive .false-positive-badge {
+        display: inline-block;
+    }
+    
+    .anomaly-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .filter-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+        .analysis-meta {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .anomaly-filters {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="sidebar-brand-text">CyberTech</div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Core</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.home') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.dataset_manager') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-database"></i></span>
+                <span class="nav-text">Datasets</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Security</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.anomaly_detection') }}" class="nav-link active">
+                <span class="nav-icon"><i class="fas fa-search"></i></span>
+                <span class="nav-text">Anomaly Detection</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.user_behavior') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-text">User Behavior</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('vulnerabilities.vulnerability_management') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-bug"></i></span>
+                <span class="nav-text">Vulnerabilities</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('incident_response.manage_incidents') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <span class="nav-text">Incident Response</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Account</div>
+        
+        <div class="nav-item">
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-cog"></i></span>
+                <span class="nav-text">Settings</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Topbar -->
+        <div class="topbar">
+            <button class="topbar-toggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search topbar-search-icon"></i>
+                <input type="text" class="topbar-search-input" id="anomaly-search" placeholder="Search anomalies...">
+            </div>
+            
+            <div class="topbar-nav">
+                <div class="topbar-nav-item">
+                    <a href="#" class="topbar-nav-link">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    {% if recent_alerts and recent_alerts|length > 0 %}
+                    <span class="topbar-nav-badge">{{ recent_alerts|length }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        {{ current_user.username[0] }}
+                    </div>
+                    <div class="topbar-user-info">
+                        <div class="topbar-user-name">{{ current_user.username }}</div>
+                        <div class="topbar-user-role">{% if current_user.is_admin %}Administrator{% else %}User{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Analysis Results</h1>
+                <a href="{{ url_for('analysis.anomaly_detection') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Detection
+                </a>
+            </div>
+            
+            <!-- Analysis Header -->
+            <div class="card analysis-header">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h2>{{ analysis.name }}</h2>
+                        <span class="status-badge status-{{ analysis.status }}">
+                            {% if analysis.status == 'running' %}
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                            {% elif analysis.status == 'completed' %}
+                                <i class="fas fa-check-circle mr-2"></i>
+                            {% elif analysis.status == 'failed' %}
+                                <i class="fas fa-times-circle mr-2"></i>
+                            {% else %}
+                                <i class="fas fa-clock mr-2"></i>
+                            {% endif %}
+                            {{ analysis.status|upper }}
+                        </span>
+                    </div>
+                    
+                    <div class="analysis-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Dataset</span>
+                            <span class="meta-value">{{ analysis.dataset.name }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Analysis Type</span>
+                            <span class="meta-value">{{ analysis.analysis_type|replace('_', ' ')|title }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Started</span>
+                            <span class="meta-value">{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        {% if analysis.completed_at %}
+                        <div class="meta-item">
+                            <span class="meta-label">Completed</span>
+                            <span class="meta-value">{{ analysis.completed_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Duration</span>
+                            <span class="meta-value">{{ (analysis.completed_at - analysis.created_at).seconds // 60 }} min {{ (analysis.completed_at - analysis.created_at).seconds % 60 }} sec</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary Section -->
+            <div class="row mb-4">
+                <div class="col-lg-8">
+                    <div class="card summary-card">
+                        <div class="card-header">
+                            <h3>Summary</h3>
+                        </div>
+                        <div class="card-body">
+                            {% if analysis.result_summary %}
+                                <p>{{ analysis.result_summary }}</p>
+                            {% else %}
+                                <p class="text-secondary">No summary available for this analysis.</p>
+                            {% endif %}
+                            
+                            <h4 class="mt-4 mb-3">Key Findings</h4>
+                            <div class="summary-list">
+                                {% if anomalies|selectattr('severity', 'equalto', 'critical')|list|length > 0 %}
+                                    <div class="summary-list-item">
+                                        <i class="fas fa-radiation text-critical"></i>
+                                        <div>
+                                            Critical severity anomalies detected. Immediate investigation recommended.
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if anomalies|selectattr('severity', 'equalto', 'high')|list|length > 0 %}
+                                    <div class="summary-list-item">
+                                        <i class="fas fa-exclamation-triangle text-high"></i>
+                                        <div>
+                                            High severity anomalies found that require prompt attention.
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if ip_patterns|default([])|length > 0 %}
+                                    <div class="summary-list-item">
+                                        <i class="fas fa-network-wired text-info"></i>
+                                        <div>
+                                            Suspicious network patterns detected from multiple source IPs.
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if time_patterns|default([])|length > 0 %}
+                                    <div class="summary-list-item">
+                                        <i class="fas fa-clock text-info"></i>
+                                        <div>
+                                            Temporal patterns identified in anomalous activities.
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if anomalies|length == 0 %}
+                                    <div class="summary-list-item">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <div>
+                                            No anomalies detected in the analyzed dataset.
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card summary-card">
+                        <div class="card-header">
+                            <h3>Statistics</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6 mb-4">
+                                    <div class="stat-value">{{ anomalies|length }}</div>
+                                    <div class="stat-label">Total Anomalies</div>
+                                </div>
+                                <div class="col-6 mb-4">
+                                    <div class="stat-value">{{ unique_ips|default(0) }}</div>
+                                    <div class="stat-label">Unique IPs</div>
+                                </div>
+                                <div class="col-6 mb-4">
+                                    <div class="stat-value">{{ anomalies|selectattr('severity', 'equalto', 'critical')|list|length }}</div>
+                                    <div class="stat-label text-critical">Critical</div>
+                                </div>
+                                <div class="col-6 mb-4">
+                                    <div class="stat-value">{{ anomalies|selectattr('severity', 'equalto', 'high')|list|length }}</div>
+                                    <div class="stat-label text-high">High</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-value">{{ anomalies|selectattr('severity', 'equalto', 'medium')|list|length }}</div>
+                                    <div class="stat-label text-medium">Medium</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-value">{{ anomalies|selectattr('severity', 'equalto', 'low')|list|length }}</div>
+                                    <div class="stat-label text-low">Low</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualization Section -->
+            <div class="card visualization-section">
+                <div class="card-header">
+                    <h3>Visualizations</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h4 class="mb-3">Anomalies by Severity</h4>
+                            <div class="anomaly-chart">
+                                <canvas id="severityChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h4 class="mb-3">Anomalies Timeline</h4>
+                            <div class="anomaly-chart">
+                                <canvas id="timelineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if unique_ips and unique_ips > 1 %}
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h4 class="mb-3">Anomalies by Source IP</h4>
+                            <div class="anomaly-chart">
+                                <canvas id="ipSourceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Data Source Preview -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Data Source</h3>
+                </div>
+                <div class="card-body">
+                    <div class="source-header">
+                        <i class="fas fa-file-alt"></i> {{ analysis.dataset.name }}
+                    </div>
+                    
+                    <div class="source-preview">
+                        {% if data_preview %}
+                            <pre>{{ data_preview }}</pre>
+                        {% else %}
+                            <p class="text-secondary">Data preview not available.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="{{ url_for('dashboard.download_dataset', dataset_id=analysis.dataset.id) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-download"></i> Download Full Dataset
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Detected Anomalies -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3>Detected Anomalies</h3>
+                    <span class="badge badge-primary">{{ anomalies|length }}</span>
+                </div>
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="anomaly-filters">
+                        <div class="filter-group">
+                            <span class="filter-label">Severity:</span>
+                            <select class="form-control form-control-sm anomaly-filter" id="severity-filter">
+                                <option value="all">All Severity</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <span class="filter-label">Status:</span>
+                            <select class="form-control form-control-sm anomaly-filter" id="status-filter">
+                                <option value="all">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="false-positive">False Positive</option>
+                            </select>
+                        </div>
+                        
+                        {% if unique_ips and unique_ips > 1 %}
+                        <div class="filter-group">
+                            <span class="filter-label">Source IP:</span>
+                            <select class="form-control form-control-sm anomaly-filter" id="ip-filter">
+                                <option value="all">All IPs</option>
+                                {% for ip in source_ips|default([]) %}
+                                    <option value="{{ ip }}">{{ ip }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="filter-group ml-auto">
+                            <span class="filter-label">Results:</span>
+                            <span id="results-count" class="badge badge-primary">{{ anomalies|length }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Anomalies List -->
+                    {% if anomalies %}
+                        {% for anomaly in anomalies %}
+                            <div class="card anomaly-item {{ anomaly.severity }} {{ 'false-positive' if anomaly.is_false_positive else '' }}" 
+                                 data-severity="{{ anomaly.severity }}" 
+                                 data-anomaly-id="{{ anomaly.id }}"
+                                 data-source-ip="{{ anomaly.source_ip or '' }}">
+                                <div class="anomaly-header">
+                                    <div class="anomaly-title">
+                                        {% if anomaly.severity == 'critical' %}
+                                            <i class="fas fa-exclamation-circle text-critical"></i>
+                                        {% elif anomaly.severity == 'high' %}
+                                            <i class="fas fa-exclamation-triangle text-high"></i>
+                                        {% elif anomaly.severity == 'medium' %}
+                                            <i class="fas fa-exclamation text-medium"></i>
+                                        {% else %}
+                                            <i class="fas fa-info-circle text-low"></i>
+                                        {% endif %}
+                                        {{ anomaly.description|truncate(100) }}
+                                        <span class="false-positive-badge">FALSE POSITIVE</span>
+                                    </div>
+                                    <span class="badge badge-{{ anomaly.severity }}">{{ anomaly.severity|upper }}</span>
+                                </div>
+                                <div class="anomaly-body">
+                                    <div class="anomaly-meta">
+                                        <div class="anomaly-detail">
+                                            <span class="detail-label">Detected</span>
+                                            <span class="detail-value">{{ anomaly.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                                        </div>
+                                        {% if anomaly.source_ip %}
+                                        <div class="anomaly-detail">
+                                            <span class="detail-label">Source IP</span>
+                                            <span class="detail-value">{{ anomaly.source_ip }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if anomaly.destination_ip %}
+                                        <div class="anomaly-detail">
+                                            <span class="detail-label">Destination IP</span>
+                                            <span class="detail-value">{{ anomaly.destination_ip }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="anomaly-description">
+                                        {{ anomaly.description }}
+                                    </div>
+                                    
+                                    <div class="anomaly-actions">
+                                        {% if not anomaly.is_false_positive %}
+                                            <button class="btn btn-sm btn-outline-secondary mark-false-positive-btn" data-anomaly-id="{{ anomaly.id }}">
+                                                <i class="fas fa-ban"></i> Mark False Positive
+                                            </button>
+                                            
+                                            <button class="btn btn-sm btn-outline-warning create-incident-btn" data-anomaly-id="{{ anomaly.id }}">
+                                                <i class="fas fa-exclamation-triangle"></i> Create Incident
+                                            </button>
+                                        {% endif %}
+                                        
+                                        <div class="ml-auto">
+                                            <button class="btn btn-sm btn-outline-info" data-toggle="collapse" data-target="#remediation-{{ anomaly.id }}">
+                                                <i class="fas fa-chevron-down"></i> Remediation Steps
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="collapse mt-3" id="remediation-{{ anomaly.id }}">
+                                        <div class="card card-body bg-tertiary">
+                                            <h5>Recommended Remediation</h5>
+                                            <p>{{ anomaly.remediation_steps or 'No specific remediation steps available.' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="fas fa-search fa-3x mb-3 text-secondary"></i>
+                            <h3 class="text-secondary">No Anomalies Detected</h3>
+                            <p>The analysis did not find any anomalies in this dataset.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div id="no-results-message" class="text-center p-4" style="display: none;">
+                        <i class="fas fa-filter fa-2x mb-3 text-secondary"></i>
+                        <h4 class="text-secondary">No matching results</h4>
+                        <p>Try adjusting your filters to see more results.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize charts
+        initializeCharts();
+        
+        // Set up filtering
+        setupFiltering();
+        
+        // Mark as false positive button handling
+        setupMarkAsFalsePositive();
+        
+        // Create incident from anomaly
+        setupCreateIncident();
+    });
+    
+    function initializeCharts() {
+        // Severity chart
+        const severityCtx = document.getElementById('severityChart').getContext('2d');
+        new Chart(severityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    data: [
+                        {{ anomalies|selectattr('severity', 'equalto', 'critical')|list|length }},
+                        {{ anomalies|selectattr('severity', 'equalto', 'high')|list|length }},
+                        {{ anomalies|selectattr('severity', 'equalto', 'medium')|list|length }},
+                        {{ anomalies|selectattr('severity', 'equalto', 'low')|list|length }}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 56, 96, 0.7)',
+                        'rgba(255, 157, 68, 0.7)',
+                        'rgba(255, 221, 87, 0.7)',
+                        'rgba(72, 199, 116, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 56, 96, 1)',
+                        'rgba(255, 157, 68, 1)',
+                        'rgba(255, 221, 87, 1)',
+                        'rgba(72, 199, 116, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: 'rgb(255, 255, 255)'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.formattedValue;
+                                const dataset = context.dataset;
+                                const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Timeline chart (dummy data if not available)
+        const timelineData = {
+            labels: [
+                {% for label in timeline_labels|default(['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) %}
+                    '{{ label }}',
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'Anomalies',
+                data: [
+                    {% for value in timeline_values|default([0, 2, 5, 3, 8, 4, 2]) %}
+                        {{ value }},
+                    {% endfor %}
+                ],
+                borderColor: 'rgba(88, 166, 255, 1)',
+                backgroundColor: 'rgba(88, 166, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        };
+        
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        new Chart(timelineCtx, {
+            type: 'line',
+            data: timelineData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'rgb(255, 255, 255)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgb(255, 255, 255)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+        
+        {% if unique_ips and unique_ips > 1 %}
+        // IP Source chart
+        const ipCtx = document.getElementById('ipSourceChart').getContext('2d');
+        new Chart(ipCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for ip in ip_counts|default({}).keys() %}
+                        '{{ ip }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Anomalies Count',
+                    data: [
+                        {% for count in ip_counts|default({}).values() %}
+                            {{ count }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(137, 87, 229, 0.7)',
+                    borderColor: 'rgba(137, 87, 229, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            color: 'rgb(255, 255, 255)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgb(255, 255, 255)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+        {% endif %}
+    }
+    
+    function setupFiltering() {
+        const severityFilter = document.getElementById('severity-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const ipFilter = document.getElementById('ip-filter');
+        const searchInput = document.getElementById('anomaly-search');
+        
+        const filters = [severityFilter, statusFilter];
+        if (ipFilter) filters.push(ipFilter);
+        if (searchInput) filters.push(searchInput);
+        
+        filters.forEach(filter => {
+            if (filter) {
+                filter.addEventListener('change', applyFilters);
+            }
+        });
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
+        
+        function applyFilters() {
+            const selectedSeverity = severityFilter ? severityFilter.value : 'all';
+            const selectedStatus = statusFilter ? statusFilter.value : 'all';
+            const selectedIp = ipFilter ? ipFilter.value : 'all';
+            const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+            
+            const anomalies = document.querySelectorAll('.anomaly-item');
+            let visibleCount = 0;
+            
+            anomalies.forEach(anomaly => {
+                const severity = anomaly.getAttribute('data-severity');
+                const isFalsePositive = anomaly.classList.contains('false-positive');
+                const status = isFalsePositive ? 'false-positive' : 'active';
+                const sourceIp = anomaly.getAttribute('data-source-ip');
+                const anomalyText = anomaly.textContent.toLowerCase();
+                
+                // Check if anomaly matches all filters
+                const matchesSeverity = selectedSeverity === 'all' || severity === selectedSeverity;
+                const matchesStatus = selectedStatus === 'all' || status === selectedStatus;
+                const matchesIp = selectedIp === 'all' || sourceIp === selectedIp;
+                const matchesSearch = searchQuery === '' || anomalyText.includes(searchQuery);
+                
+                // Apply combined filters
+                if (matchesSeverity && matchesStatus && matchesIp && matchesSearch) {
+                    anomaly.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    anomaly.style.display = 'none';
+                }
+            });
+            
+            // Update results count
+            const resultsCount = document.getElementById('results-count');
+            if (resultsCount) {
+                resultsCount.textContent = visibleCount;
+            }
+            
+            // Show/hide no results message
+            const noResultsMessage = document.getElementById('no-results-message');
+            if (noResultsMessage) {
+                noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+    }
+    
+    function setupMarkAsFalsePositive() {
+        const markButtons = document.querySelectorAll('.mark-false-positive-btn');
+        
+        markButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const anomalyId = this.getAttribute('data-anomaly-id');
+                
+                if (confirm('Are you sure you want to mark this anomaly as a false positive?')) {
+                    // Make AJAX request to mark as false positive
+                    fetch(`/mark_false_positive/${anomalyId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update UI to reflect the change
+                            const anomalyItem = document.querySelector(`.anomaly-item[data-anomaly-id="${anomalyId}"]`);
+                            if (anomalyItem) {
+                                anomalyItem.classList.add('false-positive');
+                                
+                                // Disable the buttons
+                                const actionButtons = anomalyItem.querySelectorAll('.anomaly-actions button:not([data-toggle])');
+                                actionButtons.forEach(btn => {
+                                    btn.style.display = 'none';
+                                });
+                                
+                                // Show success message
+                                alert('Anomaly marked as false positive.');
+                            }
+                        } else {
+                            alert('Failed to mark anomaly as false positive: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while marking the anomaly as false positive.');
+                    });
+                }
+            });
+        });
+    }
+    
+    function setupCreateIncident() {
+        const createButtons = document.querySelectorAll('.create-incident-btn');
+        
+        createButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const anomalyId = this.getAttribute('data-anomaly-id');
+                
+                if (confirm('Are you sure you want to create an incident from this anomaly?')) {
+                    // Redirect to create incident page
+                    window.location.href = `/create_incident_from_anomaly/${anomalyId}`;
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}

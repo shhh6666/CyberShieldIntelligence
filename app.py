@@ -66,8 +66,8 @@ from routes.analysis import analysis
 from routes.vulnerabilities import vulnerabilities
 from routes.incident_response import incident_response
 
-app.register_blueprint(auth)
-app.register_blueprint(dashboard)
-app.register_blueprint(analysis)
-app.register_blueprint(vulnerabilities)
-app.register_blueprint(incident_response)
+app.register_blueprint(auth, url_prefix='/auth')
+app.register_blueprint(dashboard, url_prefix='/dashboard')
+app.register_blueprint(analysis, url_prefix='/analysis')
+app.register_blueprint(vulnerabilities, url_prefix='/vulnerabilities')
+app.register_blueprint(incident_response, url_prefix='/incidents')

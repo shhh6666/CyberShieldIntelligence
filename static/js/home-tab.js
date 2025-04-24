@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
+    // Initialize navigation menu
+    initNavigation();
+    
     // Add smooth scrolling for anchor links on home page
     const anchors = document.querySelectorAll('a[href^="#"]');
     anchors.forEach(anchor => {
@@ -55,7 +58,69 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('online', updateOfflineStatus);
     window.addEventListener('offline', updateOfflineStatus);
     
+    function initNavigation() {
+        // Add active class to current navigation item
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPath || 
+                (currentPath === '/' && href.includes('home')) || 
+                (currentPath.includes('dashboard') && href.includes('dashboard'))) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        // Initialize dropdown menus
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const menu = this.nextElementSibling;
+                menu.classList.toggle('show');
+                
+                // Close other open dropdowns
+                dropdownToggles.forEach(otherToggle => {
+                    if (otherToggle !== this) {
+                        const otherMenu = otherToggle.nextElementSibling;
+                        otherMenu.classList.remove('show');
+                    }
+                });
+            });
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-toggle')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        if (mobileMenuToggle) {
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('show-mobile');
+                this.classList.toggle('active');
+            });
+        }
+    }
+    
     function updateOfflineStatus() {
+        // Update the offline indicator in the header
+        const offlineIndicator = document.getElementById('offline-status');
+        if (offlineIndicator) {
+            offlineIndicator.style.display = navigator.onLine ? 'none' : 'flex';
+        }
+        
+        // Update the offline badge on home page
         const offlineBadge = document.querySelector('.offline-badge');
         if (!offlineBadge) return;
         
@@ -66,13 +131,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (offlineIcon) {
                 offlineIcon.className = 'fas fa-wifi offline-icon';
             }
-            offlineBadge.textContent = offlineBadge.textContent.replace('Offline', 'Online');
+            offlineBadge.textContent = ' Online Mode Available';
+            offlineBadge.prepend(offlineIcon);
         } else {
             offlineBadge.style.backgroundColor = '#f85149'; // Red
             if (offlineIcon) {
                 offlineIcon.className = 'fas fa-wifi-slash offline-icon';
             }
-            offlineBadge.textContent = offlineBadge.textContent.replace('Online', 'Offline');
+            offlineBadge.textContent = ' Offline Mode Active';
+            offlineBadge.prepend(offlineIcon);
             
             // Show offline notification
             showOfflineNotification();

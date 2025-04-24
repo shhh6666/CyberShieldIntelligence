@@ -27,7 +27,8 @@ def vulnerability_management():
         db.session.commit()
         
         # Parse target systems
-        target_systems = [s.strip() for s in form.target_systems.data.split('\n') if s.strip()]
+        target_systems_data = form.target_systems.data or ""
+        target_systems = [s.strip() for s in target_systems_data.split('\n') if s.strip()]
         
         # Run vulnerability scan
         vulnerabilities_found = scan_for_vulnerabilities(target_systems, form.scan_depth.data)

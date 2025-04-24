@@ -4,11 +4,29 @@ from extensions import mail
 import os
 
 def send_email(subject, recipients, html_body):
+    """
+    Send an email if mail configuration is available.
+    Falls back gracefully if mail is not configured.
+    """
+    if not recipients:
+        current_app.logger.warning("No recipients provided for email")
+        return False
+        
+    # Create the message
     msg = Message(subject, recipients=recipients)
     msg.html = html_body
     
+    # Check if mail is properly configured
+    if not current_app.config.get('MAIL_USERNAME'):
+        current_app.logger.warning(
+            "Mail not configured (MAIL_USERNAME missing). "
+            "Email would have been sent to: " + ", ".join(recipients)
+        )
+        return False
+    
     try:
         mail.send(msg)
+        current_app.logger.info(f"Email sent to {', '.join(recipients)}: {subject}")
         return True
     except Exception as e:
         current_app.logger.error(f"Failed to send email: {str(e)}")

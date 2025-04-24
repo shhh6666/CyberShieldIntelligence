@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block title %}Login - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-background"></div>
+    
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="CyberTech Logo" class="auth-logo">
+            <h2 class="auth-title">Welcome Back</h2>
+            <p class="auth-subtitle">Sign in to access your security dashboard</p>
+        </div>
+        
+        <div class="auth-body">
+            <form class="auth-form" method="POST" action="{{ url_for('auth.login') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    {{ form.username(class="form-control", placeholder="Enter your username") }}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div style="position: relative;">
+                        {{ form.password(class="form-control", placeholder="Enter your password") }}
+                        <i class="far fa-eye password-toggle" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-check">
+                    {{ form.remember_me(class="form-check-input") }}
+                    <label class="form-check-label" for="remember_me">
+                        Remember me
+                    </label>
+                </div>
+                
+                {{ form.submit(class="btn btn-primary") }}
+                
+                <div class="auth-loader">
+                    <span class="loader"></span>
+                    <p>Authenticating...</p>
+                </div>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <div class="auth-links">
+                <a href="#">Forgot password?</a>
+                <span class="auth-divider-text">or</span>
+                <a href="{{ url_for('auth.register') }}">Create an account</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="cyber-security-icon icon-shield">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+    <div class="cyber-security-icon icon-lock">
+        <i class="fas fa-lock"></i>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.querySelector('.password-toggle');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.auth-form');
+        const loader = document.querySelector('.auth-loader');
+        const submitBtn = document.querySelector('.btn-primary');
+        
+        form.addEventListener('submit', function() {
+            // Show loading state
+            submitBtn.style.display = 'none';
+            loader.style.display = 'block';
+        });
+    });
+</script>
+{% endblock %}

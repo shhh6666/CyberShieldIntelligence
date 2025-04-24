@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="100%" stop-color="#161b22" />
+    </linearGradient>
+    
+    <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4cc9f0" stop-opacity="0" />
+      <stop offset="50%" stop-color="#4cc9f0" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#4cc9f0" stop-opacity="0" />
+    </linearGradient>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Circuit Pattern -->
+    <pattern id="circuit-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <!-- Horizontal Lines -->
+      <path d="M0,50 L200,50" stroke="#30363d" stroke-width="1" opacity="0.3" />
+      <path d="M0,100 L200,100" stroke="#30363d" stroke-width="1" opacity="0.3" />
+      <path d="M0,150 L200,150" stroke="#30363d" stroke-width="1" opacity="0.3" />
+      
+      <!-- Vertical Lines -->
+      <path d="M50,0 L50,200" stroke="#30363d" stroke-width="1" opacity="0.3" />
+      <path d="M100,0 L100,200" stroke="#30363d" stroke-width="1" opacity="0.3" />
+      <path d="M150,0 L150,200" stroke="#30363d" stroke-width="1" opacity="0.3" />
+      
+      <!-- Junction Points -->
+      <circle cx="50" cy="50" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="50" cy="100" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="50" cy="150" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="100" cy="50" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="100" cy="100" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="100" cy="150" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="150" cy="50" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="150" cy="100" r="2" fill="#30363d" opacity="0.4" />
+      <circle cx="150" cy="150" r="2" fill="#30363d" opacity="0.4" />
+    </pattern>
+    
+    <!-- Digital Nodes -->
+    <symbol id="node" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="5" fill="#4cc9f0" opacity="0.7" filter="url(#glow)" />
+      <circle cx="10" cy="10" r="2" fill="#ffffff" />
+    </symbol>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bg-gradient)" />
+  
+  <!-- Circuit Pattern Background -->
+  <rect width="1200" height="800" fill="url(#circuit-pattern)" opacity="0.8" />
+  
+  <!-- Diagonal Animated Lines -->
+  <g opacity="0.2">
+    <path d="M-100,900 L1300,-100" stroke="url(#line-gradient)" stroke-width="1">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="8s" repeatCount="indefinite" />
+    </path>
+    <path d="M-100,700 L1300,-300" stroke="url(#line-gradient)" stroke-width="1">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="7s" repeatCount="indefinite" />
+    </path>
+    <path d="M-100,500 L1300,-500" stroke="url(#line-gradient)" stroke-width="1">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="6s" repeatCount="indefinite" />
+    </path>
+    <path d="M-100,300 L1300,-700" stroke="url(#line-gradient)" stroke-width="1">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="9s" repeatCount="indefinite" />
+    </path>
+    <path d="M-100,100 L1300,-900" stroke="url(#line-gradient)" stroke-width="1">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="10s" repeatCount="indefinite" />
+    </path>
+  </g>
+  
+  <!-- Digital Nodes -->
+  <use href="#node" x="200" y="150" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="3s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="500" y="400" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="4s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="800" y="200" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="5s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="350" y="600" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="6s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="900" y="500" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="7s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="1100" y="300" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="8s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="100" y="400" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="7s" repeatCount="indefinite" />
+  </use>
+  <use href="#node" x="700" y="650" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="5s" repeatCount="indefinite" />
+  </use>
+  
+  <!-- Connecting Lines -->
+  <path d="M200,150 L500,400" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite" />
+  </path>
+  <path d="M500,400 L800,200" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" repeatCount="indefinite" />
+  </path>
+  <path d="M500,400 L350,600" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="7s" repeatCount="indefinite" />
+  </path>
+  <path d="M800,200 L900,500" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite" />
+  </path>
+  <path d="M900,500 L700,650" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="6s" repeatCount="indefinite" />
+  </path>
+  <path d="M900,500 L1100,300" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" repeatCount="indefinite" />
+  </path>
+  <path d="M350,600 L100,400" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="8s" repeatCount="indefinite" />
+  </path>
+  <path d="M100,400 L200,150" stroke="#4cc9f0" stroke-width="1" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Data Packets -->
+  <circle cx="200" cy="150" r="3" fill="#ffffff">
+    <animate attributeName="cx" values="200;500" dur="3s" repeatCount="indefinite" />
+    <animate attributeName="cy" values="150;400" dur="3s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="1;0" dur="3s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="500" cy="400" r="3" fill="#ffffff">
+    <animate attributeName="cx" values="500;800" dur="5s" repeatCount="indefinite" />
+    <animate attributeName="cy" values="400;200" dur="5s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="1;0" dur="5s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="350" cy="600" r="3" fill="#ffffff">
+    <animate attributeName="cx" values="350;100" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="cy" values="600;400" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="1;0" dur="4s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="900" cy="500" r="3" fill="#ffffff">
+    <animate attributeName="cx" values="900;1100" dur="6s" repeatCount="indefinite" />
+    <animate attributeName="cy" values="500;300" dur="6s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="1;0" dur="6s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Shield Emblem -->
+  <g transform="translate(600, 400) scale(0.7)" opacity="0.1">
+    <path d="M0,-100 L100,0 L0,100 L-100,0 Z" fill="none" stroke="#4cc9f0" stroke-width="5" />
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#4cc9f0" stroke-width="5" />
+    <path d="M-50,-50 L50,50 M-50,50 L50,-50" stroke="#4cc9f0" stroke-width="5" />
+  </g>
+  
+  <!-- Binary code background (subtle) -->
+  <text x="50" y="100" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">1010101001010101010101010101010010101010010101010</text>
+  <text x="100" y="150" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">0101010101010010101010101010100101010100101010101</text>
+  <text x="150" y="200" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">1010010101010101010101001010101001010101010101010</text>
+  <text x="200" y="250" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">0101010101010010101010101010100101010100101010101</text>
+  <text x="250" y="300" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">1010101001010101010101010101010010101010010101010</text>
+  <text x="300" y="350" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">0101010101010010101010101010100101010100101010101</text>
+  <text x="350" y="400" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">1010010101010101010101001010101001010101010101010</text>
+  <text x="400" y="450" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">0101010101010010101010101010100101010100101010101</text>
+  <text x="450" y="500" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">1010101001010101010101010101010010101010010101010</text>
+  <text x="500" y="550" font-family="monospace" font-size="10" fill="#30363d" opacity="0.1">0101010101010010101010101010100101010100101010101</text>
+</svg>

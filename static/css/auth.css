@@ -1,0 +1,289 @@
+/**
+ * CyberTech - Cybersecurity Breach Detection System
+ * Authentication CSS file
+ * Copyright Simbarashe Chimbera
+ */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.auth-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(88, 166, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88, 166, 255, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.2;
+}
+
+.auth-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(var(--primary-accent) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.1;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--secondary-dark);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 0 1px var(--border-color);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-header {
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.auth-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+}
+
+.auth-logo {
+  display: block;
+  margin: 0 auto 1rem;
+  max-width: 100px;
+}
+
+.auth-title {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 1.75rem;
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.auth-body {
+  padding: 2rem;
+}
+
+.auth-footer {
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.auth-links {
+  margin-top: 1rem;
+}
+
+.auth-links a {
+  margin: 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.auth-form .form-control {
+  background-color: var(--tertiary-dark);
+  border-color: var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.auth-form .form-control:focus {
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.25);
+  border-color: var(--primary-accent);
+}
+
+.auth-form .btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.auth-form .btn-primary {
+  background: linear-gradient(45deg, #4192e0, var(--primary-accent));
+  border: none;
+  box-shadow: 0 4px 6px rgba(88, 166, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.auth-form .btn-primary:hover {
+  background: linear-gradient(45deg, #3b84cb, #4192e0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(88, 166, 255, 0.3);
+}
+
+.auth-form .btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(88, 166, 255, 0.2);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.auth-divider::before, 
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.auth-divider-text {
+  padding: 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.form-check-input {
+  margin-right: 0.5rem;
+}
+
+.form-check-label {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.cyber-security-icon {
+  position: absolute;
+  opacity: 0.05;
+  z-index: -1;
+}
+
+.icon-shield {
+  top: 10%;
+  right: 10%;
+  font-size: 8rem;
+  transform: rotate(15deg);
+}
+
+.icon-lock {
+  bottom: 10%;
+  left: 10%;
+  font-size: 6rem;
+  transform: rotate(-10deg);
+}
+
+/* Cyber-themed decorative elements */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--danger-color), var(--primary-accent), var(--success-color));
+}
+
+.auth-form .form-group {
+  position: relative;
+}
+
+.auth-form .form-group::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-accent);
+  transition: width 0.3s ease;
+}
+
+.auth-form .form-group:focus-within::after {
+  width: 100%;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 38px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.auth-loader {
+  display: none;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-loader .loader {
+  display: inline-block;
+}
+
+/* Animation for form field focus */
+@keyframes formFocus {
+  0% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(88, 166, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0); }
+}
+
+.auth-form .form-control:focus {
+  animation: formFocus 1s 1;
+}
+
+/* Error messages */
+.invalid-feedback {
+  display: block;
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .auth-card {
+    margin: 1rem;
+    border-radius: 8px;
+  }
+  
+  .auth-header, 
+  .auth-body {
+    padding: 1.5rem;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+  }
+}

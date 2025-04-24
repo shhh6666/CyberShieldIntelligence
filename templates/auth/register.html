@@ -1,0 +1,175 @@
+{% extends "layout.html" %}
+
+{% block title %}Register - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-background"></div>
+    
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="CyberTech Logo" class="auth-logo">
+            <h2 class="auth-title">Create an Account</h2>
+            <p class="auth-subtitle">Join CyberTech security platform</p>
+        </div>
+        
+        <div class="auth-body">
+            <form class="auth-form" method="POST" action="{{ url_for('auth.register') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    {{ form.username(class="form-control", placeholder="Choose a username") }}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    {{ form.email(class="form-control", placeholder="Enter your email address") }}
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div style="position: relative;">
+                        {{ form.password(class="form-control", placeholder="Create a password") }}
+                        <i class="far fa-eye password-toggle" onclick="togglePasswordVisibility('password')"></i>
+                    </div>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <small class="form-text">Password must be at least 8 characters long</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password2">Confirm Password</label>
+                    <div style="position: relative;">
+                        {{ form.password2(class="form-control", placeholder="Confirm your password") }}
+                        <i class="far fa-eye password-toggle" onclick="togglePasswordVisibility('password2')"></i>
+                    </div>
+                    {% if form.password2.errors %}
+                        {% for error in form.password2.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                {{ form.submit(class="btn btn-primary") }}
+                
+                <div class="auth-loader">
+                    <span class="loader"></span>
+                    <p>Creating account...</p>
+                </div>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <div class="auth-links">
+                <span>Already have an account?</span>
+                <a href="{{ url_for('auth.login') }}">Sign in</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="cyber-security-icon icon-shield">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+    <div class="cyber-security-icon icon-lock">
+        <i class="fas fa-lock"></i>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePasswordVisibility(fieldId) {
+        const passwordInput = document.getElementById(fieldId);
+        const toggleIcon = passwordInput.nextElementSibling;
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.auth-form');
+        const loader = document.querySelector('.auth-loader');
+        const submitBtn = document.querySelector('.btn-primary');
+        
+        form.addEventListener('submit', function() {
+            // Show loading state
+            submitBtn.style.display = 'none';
+            loader.style.display = 'block';
+        });
+        
+        // Password strength validation
+        const passwordInput = document.getElementById('password');
+        const passwordFeedback = passwordInput.nextElementSibling.nextElementSibling;
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let feedback = '';
+            
+            if (password.length >= 8) {
+                strength += 1;
+            }
+            
+            if (password.match(/[A-Z]/)) {
+                strength += 1;
+            }
+            
+            if (password.match(/[0-9]/)) {
+                strength += 1;
+            }
+            
+            if (password.match(/[^A-Za-z0-9]/)) {
+                strength += 1;
+            }
+            
+            switch (strength) {
+                case 0:
+                case 1:
+                    feedback = 'Password is weak. Use at least 8 characters.';
+                    passwordFeedback.style.color = 'var(--danger-color)';
+                    break;
+                case 2:
+                    feedback = 'Password is moderate. Add uppercase, numbers or symbols.';
+                    passwordFeedback.style.color = 'var(--warning-color)';
+                    break;
+                case 3:
+                    feedback = 'Password is good.';
+                    passwordFeedback.style.color = 'var(--primary-accent)';
+                    break;
+                case 4:
+                    feedback = 'Password is strong!';
+                    passwordFeedback.style.color = 'var(--success-color)';
+                    break;
+            }
+            
+            passwordFeedback.textContent = feedback;
+        });
+    });
+</script>
+{% endblock %}

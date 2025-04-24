@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
-from app import db
+from extensions import db
 from models import Dataset, Analysis, Anomaly, UserActivity, Alert
 from forms import AnomalyDetectionForm
 from utils.anomaly_detection import detect_anomalies

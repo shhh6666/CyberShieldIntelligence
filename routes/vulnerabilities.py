@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
-from app import db
+from extensions import db
 from models import Vulnerability, UserActivity
 from forms import VulnerabilityScanForm
 from utils.vulnerability_scan import scan_for_vulnerabilities

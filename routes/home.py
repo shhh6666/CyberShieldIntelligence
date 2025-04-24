@@ -1,8 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required
+from datetime import datetime
 
 # Create blueprint
 home_bp = Blueprint('home', __name__)
+
+# Add global context processor to provide 'now' to all templates
+@home_bp.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
 
 @home_bp.route('/')
 def index():

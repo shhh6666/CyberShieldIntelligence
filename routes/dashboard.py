@@ -1,18 +1,19 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify, current_app
 from flask_login import login_required, current_user
-from app import db, app
+from extensions import db
 from models import Alert, Dataset, Analysis, Anomaly, UserActivity, Vulnerability, IncidentResponse
 from forms import UploadDatasetForm
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime, timedelta
 
+# Create blueprint
+dashboard = Blueprint('dashboard', __name__)
+
 # Add global context processor to provide 'now' to all templates
-@app.context_processor
+@dashboard.context_processor
 def inject_now():
     return {'now': datetime.utcnow()}
-
-dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route('/')
 @dashboard.route('/home')

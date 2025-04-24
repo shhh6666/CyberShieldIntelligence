@@ -1,7 +1,7 @@
 from app import app  # noqa: F401
 from routes.home import home_bp
 
-# Register blueprints
+# Register home blueprint (others are registered in app.py)
 app.register_blueprint(home_bp)
 
 if __name__ == "__main__":

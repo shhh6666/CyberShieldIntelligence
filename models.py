@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     mfa_enabled = db.Column(db.Boolean, default=False)
     mfa_secret = db.Column(db.String(32))  # For future MFA implementation
     last_login = db.Column(db.DateTime)
+    phone_number = db.Column(db.String(20))  # For SMS notifications
     
     # Relationships
     alerts = db.relationship('Alert', backref='user', lazy='dynamic')

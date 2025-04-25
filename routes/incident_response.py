@@ -4,6 +4,7 @@ from extensions import db
 from models import IncidentResponse, Anomaly, UserActivity
 from forms import IncidentResponseForm
 from utils.email import send_incident_response_email
+from utils.sms import send_incident_sms
 from datetime import datetime
 
 incident_response = Blueprint('incident_response', __name__)
@@ -38,7 +39,15 @@ def manage_incidents():
         # Send notification email
         send_incident_response_email(current_user, incident)
         
-        flash('Incident created successfully.', 'success')
+        # Send SMS for critical/high severity incidents
+        if incident.severity in ['critical', 'high']:
+            sms_result = send_incident_sms(current_user, incident)
+            if sms_result.get('success'):
+                flash(f'Incident created successfully. SMS notification sent.', 'success')
+            else:
+                flash(f'Incident created successfully. Email notification sent.', 'success')
+        else:
+            flash('Incident created successfully. Email notification sent.', 'success')
         return redirect(url_for('incident_response.manage_incidents'))
     
     # Get all incidents
@@ -141,5 +150,13 @@ def create_incident_from_anomaly(anomaly_id):
     # Send notification email
     send_incident_response_email(current_user, incident)
     
-    flash('Incident created from anomaly successfully.', 'success')
+    # Send SMS for critical/high severity incidents
+    if incident.severity in ['critical', 'high']:
+        sms_result = send_incident_sms(current_user, incident)
+        if sms_result.get('success'):
+            flash(f'Incident created from anomaly successfully. SMS notification sent.', 'success')
+        else:
+            flash(f'Incident created from anomaly successfully. Email notification sent.', 'success')
+    else:
+        flash('Incident created from anomaly successfully. Email notification sent.', 'success')
     return redirect(url_for('incident_response.incident_details', incident_id=incident.id))

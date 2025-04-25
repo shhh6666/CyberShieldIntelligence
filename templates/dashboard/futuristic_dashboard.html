@@ -188,38 +188,9 @@
                     </div>
                 </div>
                 
-                <div class="row mb-4">
-                    <!-- Global Threat Map -->
-                    <div class="col-md-8">
-                        <div class="futuristic-card">
-                            <div class="futuristic-card-header">
-                                <h3><i class="fas fa-globe"></i> Global Threat Map</h3>
-                                <div>
-                                    <span class="glow-text">Live</span>
-                                </div>
-                            </div>
-                            <div class="threat-map-container">
-                                <div id="threatMap" class="threat-map"></div>
-                                <div class="map-overlay">
-                                    <div class="map-legend">
-                                        <div class="map-legend-icon legend-critical"></div>
-                                        <span>Critical Threats</span>
-                                    </div>
-                                    <div class="map-legend">
-                                        <div class="map-legend-icon legend-high"></div>
-                                        <span>High Impact Attacks</span>
-                                    </div>
-                                    <div class="map-legend">
-                                        <div class="map-legend-icon legend-medium"></div>
-                                        <span>Medium Risk Activity</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
+                <div class="row mb-4">                    
                     <!-- Security Score Visualization -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="futuristic-card">
                             <div class="futuristic-card-header">
                                 <h3><i class="fas fa-tachometer-alt"></i> Security Health</h3>
@@ -263,6 +234,56 @@
                                 </div>
                                 <div class="progress" style="height: 5px;">
                                     <div class="progress-bar" role="progressbar" style="width: 82%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Security Summary Card -->
+                    <div class="col-md-6">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-shield-alt"></i> Security Summary</h3>
+                            </div>
+                            <div class="p-3">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="mr-3 text-center" style="width: 50px;">
+                                        <i class="fas fa-eye" style="font-size: 2rem; color: var(--neon-blue);"></i>
+                                    </div>
+                                    <div>
+                                        <div class="h5 mb-1">System Monitoring</div>
+                                        <div class="text-muted">Active on {{ total_datasets }} data sources</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="pulse-dot"></span>
+                                        <span class="glow-text">Live</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="mr-3 text-center" style="width: 50px;">
+                                        <i class="fas fa-filter" style="font-size: 2rem; color: var(--neon-green);"></i>
+                                    </div>
+                                    <div>
+                                        <div class="h5 mb-1">Threat Filtering</div>
+                                        <div class="text-muted">{{ total_anomalies }} threats analyzed</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="threat-badge threat-low">Active</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-3 text-center" style="width: 50px;">
+                                        <i class="fas fa-fingerprint" style="font-size: 2rem; color: var(--neon-purple);"></i>
+                                    </div>
+                                    <div>
+                                        <div class="h5 mb-1">Identity Protection</div>
+                                        <div class="text-muted">Advanced security protocols active</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="threat-badge threat-medium">Enhanced</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -832,57 +853,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
     
-    // Simple visualization for the threat map
-    const threatMap = document.getElementById('threatMap');
-    if (threatMap) {
-        // This is a simplified placeholder. In a real application,
-        // you would use a proper mapping library like Leaflet or MapboxGL
-        const mapSvg = d3.select(threatMap)
-            .append('svg')
-            .attr('width', '100%')
-            .attr('height', '100%')
-            .style('background', 'transparent');
-        
-        // Draw some threat indicators
-        const drawThreats = () => {
-            // Clear previous threats
-            mapSvg.selectAll('.threat').remove();
-            
-            // Generate random threat positions
-            const threats = Array.from({length: 20}, () => ({
-                x: Math.random() * 100,
-                y: Math.random() * 100,
-                type: Math.random() > 0.7 ? 'critical' : (Math.random() > 0.5 ? 'high' : 'medium'),
-                radius: Math.random() * 10 + 5
-            }));
-            
-            // Draw threats
-            mapSvg.selectAll('.threat')
-                .data(threats)
-                .enter()
-                .append('circle')
-                .attr('class', 'threat')
-                .attr('cx', d => `${d.x}%`)
-                .attr('cy', d => `${d.y}%`)
-                .attr('r', d => d.radius)
-                .style('fill', d => {
-                    if (d.type === 'critical') return 'rgba(255, 59, 59, 0.8)';
-                    if (d.type === 'high') return 'rgba(255, 143, 59, 0.8)';
-                    return 'rgba(255, 206, 59, 0.8)';
-                })
-                .style('filter', 'blur(3px)')
-                .transition()
-                .duration(2000)
-                .style('opacity', 0.3)
-                .attr('r', d => d.radius * 2);
-        };
-        
-        // Initial draw
-        drawThreats();
-        
-        // Periodically update threats
-        setInterval(drawThreats, 3000);
-    }
+    // Threat map visualization removed as requested
 });
 </script>
 {% endblock %}

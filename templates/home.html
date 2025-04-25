@@ -4,221 +4,402 @@
 
 {% block extra_css %}
 <style>
-    .hero-section {
-        position: relative;
-        padding: 4rem 0;
-        margin-bottom: 2rem;
-        background-color: var(--secondary-dark);
-        border-radius: 8px;
-        overflow: hidden;
+    :root {
+        --neon-blue: #00e1ff;
+        --neon-pink: #ff00bb;
+        --neon-purple: #9d00ff;
+        --neon-green: #00ff88;
+        --dark-blue: #0f1e3d;
+        --darker-blue: #091124;
+        --grid-color: rgba(0, 225, 255, 0.1);
     }
     
-    .hero-bg {
+    .hero-section {
+        position: relative;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: linear-gradient(125deg, var(--darker-blue), var(--dark-blue));
+        margin-bottom: 3rem;
+        border-radius: 12px;
+        border: 1px solid var(--neon-blue);
+        box-shadow: 0 0 30px rgba(0, 225, 255, 0.2);
+    }
+    
+    .hero-grid {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        opacity: 0.1;
-        background-image: url("{{ url_for('static', filename='images/cyber_bg.svg') }}");
-        background-size: cover;
-        background-position: center;
+        background-size: 50px 50px;
+        background-image: 
+            linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+        transform: perspective(500px) rotateX(30deg);
+        transform-origin: center top;
+        animation: grid-animation 20s linear infinite;
+    }
+    
+    @keyframes grid-animation {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 50px 50px;
+        }
     }
     
     .hero-content {
         position: relative;
-        z-index: 1;
-        max-width: 800px;
-        margin: 0 auto;
+        z-index: 2;
         text-align: center;
+        max-width: 800px;
+        padding: 2rem;
+    }
+    
+    .hero-glow {
+        position: absolute;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(0, 225, 255, 0.3) 0%, rgba(0, 225, 255, 0) 70%);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 0;
     }
     
     .hero-title {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 4rem;
+        font-weight: 800;
         margin-bottom: 1.5rem;
-        color: var(--primary-accent);
+        background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 20px rgba(0, 225, 255, 0.5);
+        letter-spacing: 2px;
     }
     
     .hero-subtitle {
         font-size: 1.25rem;
-        margin-bottom: 2rem;
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-    
-    .feature-card {
-        background-color: var(--tertiary-dark);
-        border-radius: 8px;
-        padding: 1.5rem;
-        height: 100%;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-bottom: 3px solid var(--border-color);
-    }
-    
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        border-bottom-color: var(--primary-accent);
-    }
-    
-    .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1.25rem;
-        color: var(--primary-accent);
-    }
-    
-    .feature-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.75rem;
-    }
-    
-    .feature-description {
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-    
-    .cta-section {
-        background-color: var(--tertiary-dark);
-        border-radius: 8px;
-        padding: 3rem;
-        text-align: center;
-        margin-top: 3rem;
-        margin-bottom: 2rem;
-    }
-    
-    .cta-title {
-        font-size: 1.75rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-    
-    .cta-description {
-        color: var(--text-secondary);
-        margin-bottom: 2rem;
-        max-width: 700px;
+        margin-bottom: 2.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 300;
+        max-width: 600px;
         margin-left: auto;
         margin-right: auto;
     }
     
-    .btn-cta {
-        padding: 0.75rem 2rem;
-        font-size: 1.1rem;
-        font-weight: 500;
-    }
-    
-    .testimonial-card {
-        background-color: var(--tertiary-dark);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .testimonial-text {
-        font-style: italic;
-        color: var(--text-secondary);
-        margin-bottom: 1.25rem;
-        position: relative;
-        padding: 0 1rem;
-    }
-    
-    .testimonial-text::before,
-    .testimonial-text::after {
-        content: '"';
-        font-size: 1.5rem;
-        font-family: Georgia, serif;
-        color: var(--primary-accent);
-        opacity: 0.5;
-    }
-    
-    .testimonial-text::before {
+    .hero-visual {
         position: absolute;
-        left: -0.5rem;
-        top: -0.5rem;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.15;
     }
     
-    .testimonial-text::after {
-        position: relative;
-        line-height: 0;
-    }
-    
-    .testimonial-author {
-        display: flex;
-        align-items: center;
-    }
-    
-    .author-avatar {
-        width: 50px;
-        height: 50px;
+    .network-node {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background-color: var(--neon-blue);
         border-radius: 50%;
-        background-color: var(--primary-dark);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        box-shadow: 0 0 10px var(--neon-blue);
+    }
+    
+    .network-line {
+        position: absolute;
+        height: 1px;
+        background: linear-gradient(90deg, var(--neon-blue), transparent);
+        transform-origin: left center;
+    }
+    
+    .pulse-circle {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid var(--neon-blue);
+        animation: pulse 4s infinite;
+        opacity: 0;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(0);
+            opacity: 0.8;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0;
+        }
+    }
+    
+    .feature-container {
+        position: relative;
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+        z-index: 3;
+    }
+    
+    .feature-card {
+        background: rgba(15, 30, 61, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 1.5rem;
+        height: 100%;
+        border: 1px solid rgba(0, 225, 255, 0.2);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--neon-blue);
+        box-shadow: 0 10px 30px rgba(0, 225, 255, 0.2);
+    }
+    
+    .feature-card:hover .feature-icon {
+        color: var(--neon-blue);
+        transform: scale(1.1);
+    }
+    
+    .feature-card:hover::before {
+        opacity: 1;
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(0, 225, 255, 0.1), rgba(157, 0, 255, 0.1));
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: rgba(0, 225, 255, 0.7);
+        transition: all 0.4s ease;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: white;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .feature-visual {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 120px;
+        height: 120px;
+        opacity: 0.1;
+        z-index: 1;
+    }
+    
+    .btn-cyber {
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        border: none;
+        color: white;
         font-weight: 600;
-        color: var(--primary-accent);
-        margin-right: 1rem;
+        padding: 0.75rem 2rem;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        z-index: 1;
+        box-shadow: 0 5px 15px rgba(0, 225, 255, 0.3);
     }
     
-    .author-name {
-        font-weight: 600;
+    .btn-cyber:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 225, 255, 0.5);
     }
     
-    .author-title {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
+    .btn-cyber::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.7s ease;
+        z-index: -1;
     }
     
-    .features-section,
-    .testimonials-section {
+    .btn-cyber:hover::before {
+        left: 100%;
+    }
+    
+    .btn-outline-cyber {
+        background: transparent;
+        border: 2px solid var(--neon-blue);
+        color: var(--neon-blue);
+    }
+    
+    .btn-outline-cyber:hover {
+        background: rgba(0, 225, 255, 0.1);
+    }
+    
+    .security-shield {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        margin-top: 3rem;
         margin-bottom: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
-    .section-title {
-        font-size: 1.75rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        text-align: center;
+    .shield-container {
+        position: relative;
+        width: 200px;
+        height: 240px;
     }
     
-    .section-subtitle {
-        color: var(--text-secondary);
-        text-align: center;
-        margin-bottom: 2rem;
+    .shield {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, var(--neon-blue) 0%, transparent 70%);
+        opacity: 0.1;
+        animation: shield-pulse 3s infinite;
+    }
+    
+    @keyframes shield-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.1; }
+        50% { transform: scale(1.1); opacity: 0.2; }
+    }
+    
+    .shield-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 5rem;
+        color: var(--neon-blue);
+        opacity: 0.8;
+        z-index: 2;
+    }
+    
+    .data-stream {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(to right, transparent, var(--neon-blue), transparent);
+        opacity: 0;
+        animation: data-flow 3s infinite;
+    }
+    
+    @keyframes data-flow {
+        0% { transform: translateX(-100%); opacity: 0; }
+        50% { opacity: 0.7; }
+        100% { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .floating-icons {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .floating-icon {
+        position: absolute;
+        color: white;
+        opacity: 0.5;
+        animation: float 10s infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    .signal-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .signal-wave {
+        position: absolute;
+        border: 2px solid var(--neon-green);
+        border-radius: 50%;
+        opacity: 0;
+        animation: signal-wave 4s infinite;
+    }
+    
+    @keyframes signal-wave {
+        0% { transform: scale(0); opacity: 0.5; }
+        100% { transform: scale(1); opacity: 0; }
     }
     
     .offline-badge {
-        background-color: var(--success-color);
+        background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
         color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
+        padding: 0.35rem 1rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.5rem;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
     }
     
-    .offline-badge .offline-icon {
-        font-size: 0.7rem;
+    .footer {
+        margin-top: 5rem;
+        padding: 1.5rem 0;
+        background: rgba(9, 17, 36, 0.7);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(0, 225, 255, 0.1);
+        border-radius: 12px;
+    }
+    
+    .copyright {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
     }
     
     @media (max-width: 768px) {
         .hero-title {
-            font-size: 2rem;
+            font-size: 2.5rem;
         }
         
         .hero-subtitle {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
         .feature-card {
             margin-bottom: 1.5rem;
         }
         
-        .cta-section {
-            padding: 2rem 1.5rem;
+        .security-shield {
+            height: 200px;
+        }
+        
+        .shield-container {
+            width: 150px;
+            height: 180px;
         }
     }
 </style>
@@ -228,155 +409,270 @@
 <div class="container">
     <!-- Hero Section -->
     <div class="hero-section">
-        <div class="hero-bg"></div>
+        <!-- Background Grid Effect -->
+        <div class="hero-grid"></div>
+        
+        <!-- Glowing Center -->
+        <div class="hero-glow"></div>
+        
+        <!-- Interactive Network Visualization -->
+        <div class="hero-visual" id="networkVisualization"></div>
+        
+        <!-- Hero Content -->
         <div class="hero-content">
-            <h1 class="hero-title">CyberTech Security Platform</h1>
-            <p class="hero-subtitle">Advanced cybersecurity breach detection with real-time monitoring, anomaly detection, and enhanced visualization capabilities. Keep your systems secure with our comprehensive security solution.</p>
+            <h1 class="hero-title">CYBERTECH NEXUS</h1>
+            <p class="hero-subtitle">Next-gen cyber defense system with quantum-encrypted telecommunications and AI-driven threat intelligence</p>
+            
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('dashboard.home') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                <a href="{{ url_for('dashboard.home') }}" class="btn btn-cyber btn-lg">Command Center <i class="fas fa-shield-alt ml-2"></i></a>
             {% else %}
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Sign In</a>
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+                <div class="d-flex justify-content-center gap-4">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-cyber btn-lg">Access Terminal <i class="fas fa-terminal ml-2"></i></a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-cyber btn-lg">New Identity <i class="fas fa-user-plus ml-2"></i></a>
                 </div>
             {% endif %}
+            
             <div class="mt-4">
                 <span class="offline-badge">
-                    <i class="fas fa-wifi offline-icon"></i> Offline Mode Available
+                    <i class="fas fa-broadcast-tower"></i> Secure Offline Protocol Active
                 </span>
             </div>
         </div>
     </div>
     
-    <!-- Features Section -->
-    <div class="features-section">
-        <h2 class="section-title">Comprehensive Security Features</h2>
-        <p class="section-subtitle">Empower your security team with advanced tools and capabilities</p>
-        
+    <!-- Security Shield Visualization -->
+    <div class="security-shield">
+        <div class="shield-container">
+            <div class="shield"></div>
+            <i class="fas fa-shield-alt shield-icon"></i>
+            
+            <!-- Data Streams -->
+            <div class="data-stream" style="top: 30%; animation-delay: 0s;"></div>
+            <div class="data-stream" style="top: 40%; animation-delay: 0.5s;"></div>
+            <div class="data-stream" style="top: 50%; animation-delay: 1s;"></div>
+            <div class="data-stream" style="top: 60%; animation-delay: 1.5s;"></div>
+            <div class="data-stream" style="top: 70%; animation-delay: 2s;"></div>
+            
+            <!-- Floating Security Icons -->
+            <div class="floating-icons">
+                <i class="fas fa-wifi floating-icon" style="top: 20%; left: 10%; animation-delay: 0s;"></i>
+                <i class="fas fa-lock floating-icon" style="top: 30%; right: 15%; animation-delay: 1s;"></i>
+                <i class="fas fa-fingerprint floating-icon" style="bottom: 25%; left: 12%; animation-delay: 2s;"></i>
+                <i class="fas fa-database floating-icon" style="bottom: 15%; right: 10%; animation-delay: 1.5s;"></i>
+            </div>
+            
+            <!-- Signal Waves (Telecommunications) -->
+            <div class="signal-waves">
+                <div class="signal-wave" style="top: 50%; left: 50%; width: 60px; height: 60px; animation-delay: 0s;"></div>
+                <div class="signal-wave" style="top: 50%; left: 50%; width: 100px; height: 100px; animation-delay: 1s;"></div>
+                <div class="signal-wave" style="top: 50%; left: 50%; width: 140px; height: 140px; animation-delay: 2s;"></div>
+                <div class="signal-wave" style="top: 50%; left: 50%; width: 180px; height: 180px; animation-delay: 3s;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Core Security Capabilities -->
+    <div class="feature-container">
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-search"></i>
+                        <i class="fas fa-satellite-dish"></i>
                     </div>
-                    <h3 class="feature-title">Anomaly Detection</h3>
-                    <p class="feature-description">Identify suspicious patterns and potential security breaches with our machine learning-powered anomaly detection system.</p>
+                    <h3 class="feature-title">Signal Intelligence</h3>
+                    <div class="feature-visual">
+                        <i class="fas fa-broadcast-tower"></i>
+                    </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-user-shield"></i>
+                        <i class="fas fa-brain"></i>
                     </div>
-                    <h3 class="feature-title">User Behavior Analysis</h3>
-                    <p class="feature-description">Monitor and analyze user activities to detect unusual behavior patterns that might indicate account compromise.</p>
+                    <h3 class="feature-title">Neural Defense</h3>
+                    <div class="feature-visual">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-bug"></i>
+                        <i class="fas fa-fingerprint"></i>
                     </div>
-                    <h3 class="feature-title">Vulnerability Management</h3>
-                    <p class="feature-description">Scan your systems for vulnerabilities, prioritize risks, and get actionable remediation steps to secure your infrastructure.</p>
+                    <h3 class="feature-title">Quantum Identity</h3>
+                    <div class="feature-visual">
+                        <i class="fas fa-key"></i>
+                    </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
+                        <i class="fas fa-chart-network"></i>
                     </div>
-                    <h3 class="feature-title">Incident Response</h3>
-                    <p class="feature-description">Streamline your incident response workflow with structured processes, collaboration tools, and status tracking.</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
+                    <h3 class="feature-title">Threat Matrix</h3>
+                    <div class="feature-visual">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3 class="feature-title">Advanced Analytics</h3>
-                    <p class="feature-description">Gain insights into your security posture with comprehensive dashboards, visualization tools, and trend analysis.</p>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-shield-virus"></i>
                     </div>
-                    <h3 class="feature-title">Offline Capability</h3>
-                    <p class="feature-description">Continue your security operations even without internet connectivity with our robust offline mode and data caching.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Testimonials Section -->
-    <div class="testimonials-section">
-        <h2 class="section-title">What Our Users Say</h2>
-        <p class="section-subtitle">Security professionals trust CyberTech to keep their systems secure</p>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                        CyberTech's anomaly detection system has been a game changer for our security operations. We detected several potential breaches that would have gone unnoticed with our previous tools.
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">JD</div>
-                        <div>
-                            <div class="author-name">Jane Doe</div>
-                            <div class="author-title">CISO, Tech Enterprise</div>
-                        </div>
+                    <h3 class="feature-title">Adaptive Firewall</h3>
+                    <div class="feature-visual">
+                        <i class="fas fa-fire"></i>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-6">
-                <div class="testimonial-card">
-                    <div class="testimonial-text">
-                        The offline capability allows our security team to continue operations even during network outages. It's an essential feature that we didn't know we needed until we had it.
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
                     </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">MS</div>
-                        <div>
-                            <div class="author-name">Mike Smith</div>
-                            <div class="author-title">Security Analyst, Financial Services</div>
-                        </div>
+                    <h3 class="feature-title">Secure Cloud Nexus</h3>
+                    <div class="feature-visual">
+                        <i class="fas fa-cloud"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- CTA Section -->
-    <div class="cta-section">
-        <h2 class="cta-title">Ready to Secure Your Systems?</h2>
-        <p class="cta-description">Join thousands of security professionals who trust CyberTech to protect their infrastructure from evolving cyber threats.</p>
+    <!-- Access Terminal Section -->
+    <div class="text-center mt-5 mb-5">
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard.home') }}" class="btn btn-primary btn-cta">Go to Dashboard</a>
+            <a href="{{ url_for('dashboard.home') }}" class="btn btn-cyber btn-lg">
+                <i class="fas fa-terminal mr-2"></i> Access Command Center
+            </a>
         {% else %}
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-cta">Get Started Today</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-cyber btn-lg">
+                <i class="fas fa-shield-alt mr-2"></i> Activate Defense Systems
+            </a>
         {% endif %}
     </div>
     
     <!-- Footer -->
-    <footer class="text-center mt-5 pb-4">
-        <div class="text-secondary mb-3">
-            <small>© 2025 CyberTech by Simbarashe Chimbera. All rights reserved.</small>
-        </div>
-        <div>
-            <small class="text-secondary">Secure your systems, sleep better at night.</small>
+    <footer class="footer text-center">
+        <div class="copyright">
+            &copy; {{ now.year }} CyberTech Nexus by Simbarashe Chimbera | Advanced Security Systems
         </div>
     </footer>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create interactive network visualization
+    const network = document.getElementById('networkVisualization');
+    const networkSize = 20; // Number of nodes
+    
+    // Create nodes
+    for (let i = 0; i < networkSize; i++) {
+        const node = document.createElement('div');
+        node.className = 'network-node';
+        node.style.top = Math.random() * 100 + '%';
+        node.style.left = Math.random() * 100 + '%';
+        network.appendChild(node);
+        
+        // Create 1-3 connections for each node
+        const connections = Math.floor(Math.random() * 3) + 1;
+        for (let j = 0; j < connections; j++) {
+            // Connect to a random node
+            const targetIndex = Math.floor(Math.random() * networkSize);
+            if (targetIndex !== i) {
+                setTimeout(() => {
+                    createConnection(node, i, targetIndex);
+                }, Math.random() * 2000);
+            }
+        }
+        
+        // Create pulse effect for some nodes
+        if (Math.random() > 0.7) {
+            const pulse = document.createElement('div');
+            pulse.className = 'pulse-circle';
+            pulse.style.top = node.style.top;
+            pulse.style.left = node.style.left;
+            pulse.style.width = '40px';
+            pulse.style.height = '40px';
+            pulse.style.marginTop = '-20px';
+            pulse.style.marginLeft = '-20px';
+            pulse.style.animationDelay = Math.random() * 4 + 's';
+            network.appendChild(pulse);
+        }
+    }
+    
+    function createConnection(sourceNode, sourceIndex, targetIndex) {
+        setTimeout(() => {
+            const targetNodes = document.querySelectorAll('.network-node');
+            if (targetNodes[targetIndex]) {
+                const line = document.createElement('div');
+                line.className = 'network-line';
+                
+                // Get positions
+                const sourceRect = sourceNode.getBoundingClientRect();
+                const networkRect = network.getBoundingClientRect();
+                const targetRect = targetNodes[targetIndex].getBoundingClientRect();
+                
+                // Calculate relative positions
+                const sourceX = sourceRect.left - networkRect.left + sourceRect.width / 2;
+                const sourceY = sourceRect.top - networkRect.top + sourceRect.height / 2;
+                const targetX = targetRect.left - networkRect.left + targetRect.width / 2;
+                const targetY = targetRect.top - networkRect.top + targetRect.height / 2;
+                
+                // Calculate distance and angle
+                const dx = targetX - sourceX;
+                const dy = targetY - sourceY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                // Set line position and rotation
+                line.style.top = sourceY + 'px';
+                line.style.left = sourceX + 'px';
+                line.style.width = distance + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.opacity = '0';
+                
+                network.appendChild(line);
+                
+                // Animate line appearing
+                setTimeout(() => {
+                    line.style.opacity = '0.4';
+                    line.style.transition = 'opacity 0.5s ease';
+                }, 100);
+                
+                // Periodically flash the line to simulate data transfer
+                setInterval(() => {
+                    line.style.opacity = '0.8';
+                    setTimeout(() => {
+                        line.style.opacity = '0.4';
+                    }, 200);
+                }, Math.random() * 5000 + 3000);
+            }
+        }, Math.random() * 1000);
+    }
+    
+    // Add missing Font Awesome icon styles
+    if (!document.querySelector('style[data-fa-missing]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-fa-missing', 'true');
+        style.textContent = `
+            .fas.fa-chart-network:before { content: "\\f78a"; }
+            .fas.fa-shield-virus:before { content: "\\e06c"; }
+        `;
+        document.head.appendChild(style);
+    }
+});
+</script>
 <script src="{{ url_for('static', filename='js/home-tab.js') }}"></script>
 {% endblock %}

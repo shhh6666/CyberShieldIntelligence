@@ -407,10 +407,38 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{{ url_for('static', filename='js/app-cache.js') }}"></script>
+<script src="{{ url_for('static', filename='js/offline.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize sidebar
     initSidebar();
+    
+    // Handle offline form submission for settings
+    const settingsForm = document.getElementById('settings-form');
+    
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', function(event) {
+            // If offline, prevent normal submission
+            if (!navigator.onLine) {
+                event.preventDefault();
+                
+                // Gather form data
+                const formData = new FormData(settingsForm);
+                const formDataObj = {};
+                
+                for (const [key, value] of formData.entries()) {
+                    formDataObj[key] = value;
+                }
+                
+                // Save form data for later submission
+                saveFormData('settings-form', formDataObj);
+                
+                // Show feedback to user
+                flash('Your settings will be saved when you reconnect to the internet.', 'info');
+            }
+        });
+    }
     
     // Initialize form validation
     const settingsForm = document.getElementById('settings-form');

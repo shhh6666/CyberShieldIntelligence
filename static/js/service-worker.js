@@ -16,6 +16,10 @@ const ASSETS_TO_CACHE = [
   '/static/js/anomaly_detection.js',
   '/static/js/user_behavior.js',
   '/static/js/vulnerability_scan.js',
+  '/static/js/offline.js',
+  '/static/js/app-cache.js',
+  '/settings',
+  '/dashboard',
   '/static/images/cyber_bg.svg',
   '/static/images/logo.svg'
 ];

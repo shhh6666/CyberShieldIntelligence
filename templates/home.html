@@ -420,8 +420,8 @@
         
         <!-- Hero Content -->
         <div class="hero-content">
-            <h1 class="hero-title">CYBERTECH NEXUS</h1>
-            <p class="hero-subtitle">Next-gen cyber defense system with quantum-encrypted telecommunications and AI-driven threat intelligence</p>
+            <h1 class="hero-title">CYBERTECH</h1>
+            <p class="hero-subtitle">Next-gen cyber defense system with quantum-encrypted telecommunications</p>
             
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard.home') }}" class="btn btn-cyber btn-lg">Command Center <i class="fas fa-shield-alt ml-2"></i></a>
@@ -471,77 +471,87 @@
         </div>
     </div>
     
-    <!-- Core Security Capabilities -->
+    <!-- System Overview -->
     <div class="feature-container">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-satellite-dish"></i>
+        <h2 class="text-center mb-4" style="font-size: 2.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px rgba(0, 225, 255, 0.3);">SYSTEM OVERVIEW</h2>
+        
+        <div class="system-overview-container" style="position: relative; background: rgba(15, 30, 61, 0.5); border-radius: 12px; padding: 2rem; border: 1px solid rgba(0, 225, 255, 0.3); backdrop-filter: blur(10px); overflow: hidden;">
+            <!-- Background elements -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, rgba(0, 225, 255, 0.05) 0%, transparent 70%); z-index: 0;"></div>
+            <div style="position: absolute; top: 20px; right: 20px; font-size: 120px; opacity: 0.03; color: var(--neon-blue); z-index: 0;"><i class="fas fa-shield-alt"></i></div>
+            
+            <!-- System metrics -->
+            <div class="row" style="position: relative; z-index: 2;">
+                <div class="col-md-6">
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-blue);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">Security Status</h3>
+                            <i class="fas fa-check-circle" style="font-size: 1.5rem; color: var(--neon-green);"></i>
+                        </div>
+                        <div class="progress" style="height: 10px; background: rgba(0, 225, 255, 0.1); border-radius: 5px; overflow: hidden; margin-bottom: 0.5rem;">
+                            <div class="progress-bar" style="width: 85%; height: 100%; background: linear-gradient(to right, var(--neon-green), var(--neon-blue));"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Defense Strength</span>
+                            <span style="font-size: 0.85rem; color: var(--neon-blue);">85%</span>
+                        </div>
                     </div>
-                    <h3 class="feature-title">Signal Intelligence</h3>
-                    <div class="feature-visual">
-                        <i class="fas fa-broadcast-tower"></i>
+                    
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-purple);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">Network Monitoring</h3>
+                            <i class="fas fa-broadcast-tower" style="font-size: 1.5rem; color: var(--neon-purple);"></i>
+                        </div>
+                        <div style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">42</div>
+                        <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Active endpoints secured</div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
+                
+                <div class="col-md-6">
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-pink);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">Threat Intelligence</h3>
+                            <i class="fas fa-chart-line" style="font-size: 1.5rem; color: var(--neon-pink);"></i>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div style="font-size: 2rem; font-weight: 700; color: white;">3</div>
+                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">Critical</div>
+                            </div>
+                            <div class="col-4">
+                                <div style="font-size: 2rem; font-weight: 700; color: white;">12</div>
+                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">Warnings</div>
+                            </div>
+                            <div class="col-4">
+                                <div style="font-size: 2rem; font-weight: 700; color: white;">67</div>
+                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">Blocked</div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="feature-title">Neural Defense</h3>
-                    <div class="feature-visual">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-fingerprint"></i>
-                    </div>
-                    <h3 class="feature-title">Quantum Identity</h3>
-                    <div class="feature-visual">
-                        <i class="fas fa-key"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-network"></i>
-                    </div>
-                    <h3 class="feature-title">Threat Matrix</h3>
-                    <div class="feature-visual">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-virus"></i>
-                    </div>
-                    <h3 class="feature-title">Adaptive Firewall</h3>
-                    <div class="feature-visual">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <h3 class="feature-title">Secure Cloud Nexus</h3>
-                    <div class="feature-visual">
-                        <i class="fas fa-cloud"></i>
+                    
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-green);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">System Resources</h3>
+                            <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--neon-green);"></i>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-end mb-2">
+                            <div>
+                                <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.25rem;">Processor</div>
+                                <div class="progress" style="height: 5px; width: 100px; background: rgba(0, 225, 255, 0.1); border-radius: 5px; overflow: hidden;">
+                                    <div class="progress-bar" style="width: 32%; height: 100%; background: var(--neon-green);"></div>
+                                </div>
+                            </div>
+                            <div style="font-size: 1rem; color: white;">32%</div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-end">
+                            <div>
+                                <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.25rem;">Memory</div>
+                                <div class="progress" style="height: 5px; width: 100px; background: rgba(0, 225, 255, 0.1); border-radius: 5px; overflow: hidden;">
+                                    <div class="progress-bar" style="width: 64%; height: 100%; background: var(--neon-blue);"></div>
+                                </div>
+                            </div>
+                            <div style="font-size: 1rem; color: white;">64%</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -564,7 +574,7 @@
     <!-- Footer -->
     <footer class="footer text-center">
         <div class="copyright">
-            &copy; {{ now.year }} CyberTech Nexus by Simbarashe Chimbera | Advanced Security Systems
+            &copy; {{ now.year }} CyberTech by Simbarashe Chimbera | Advanced Security Systems
         </div>
     </footer>
 </div>

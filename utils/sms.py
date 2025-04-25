@@ -70,8 +70,20 @@ def send_incident_sms(user, incident):
     if incident.severity not in ['critical', 'high']:
         return {'success': False, 'error': 'Incident severity too low for SMS notification'}
     
+    # Check if user has opted in to SMS notifications for critical incidents
+    import json
+    user_preferences = []
+    try:
+        if user.notification_preferences:
+            user_preferences = json.loads(user.notification_preferences)
+    except:
+        current_app.logger.warning(f"Could not parse notification preferences for user {user.username}")
+    
+    if 'sms_critical' not in user_preferences:
+        current_app.logger.info(f"User {user.username} has not opted in to SMS notifications")
+        return {'success': False, 'error': 'User has not opted in to SMS notifications'}
+    
     # Check if phone number exists in user preferences
-    # This would need to be added to the User model
     phone_number = getattr(user, 'phone_number', None)
     
     if not phone_number:

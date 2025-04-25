@@ -91,6 +91,7 @@ class SettingsForm(FlaskForm):
         choices=[
             ('email_critical', 'Email me about critical security alerts'),
             ('email_all', 'Email me about all security alerts'),
+            ('sms_critical', 'SMS me about critical and high severity incidents'),
             ('activity_summary', 'Weekly activity summary'),
             ('security_tips', 'Security tips and recommendations')
         ],

@@ -43,9 +43,15 @@ def manage_incidents():
         if incident.severity in ['critical', 'high']:
             sms_result = send_incident_sms(current_user, incident)
             if sms_result.get('success'):
-                flash(f'Incident created successfully. SMS notification sent.', 'success')
+                flash(f'Incident created successfully. SMS notification sent to {current_user.phone_number}.', 'success')
             else:
-                flash(f'Incident created successfully. Email notification sent.', 'success')
+                if current_user.phone_number:
+                    if 'User has not opted in to SMS notifications' in sms_result.get('error', ''):
+                        flash(f'Incident created successfully. Email notification sent. To receive SMS alerts, enable SMS notifications in Settings.', 'success')
+                    else:
+                        flash(f'Incident created successfully. Email notification sent. SMS notification failed: {sms_result.get("error")}', 'warning')
+                else:
+                    flash(f'Incident created successfully. Email notification sent. To receive SMS alerts, add your phone number in Settings.', 'success')
         else:
             flash('Incident created successfully. Email notification sent.', 'success')
         return redirect(url_for('incident_response.manage_incidents'))
@@ -154,9 +160,15 @@ def create_incident_from_anomaly(anomaly_id):
     if incident.severity in ['critical', 'high']:
         sms_result = send_incident_sms(current_user, incident)
         if sms_result.get('success'):
-            flash(f'Incident created from anomaly successfully. SMS notification sent.', 'success')
+            flash(f'Incident created from anomaly successfully. SMS notification sent to {current_user.phone_number}.', 'success')
         else:
-            flash(f'Incident created from anomaly successfully. Email notification sent.', 'success')
+            if current_user.phone_number:
+                if 'User has not opted in to SMS notifications' in sms_result.get('error', ''):
+                    flash(f'Incident created from anomaly successfully. Email notification sent. To receive SMS alerts, enable SMS notifications in Settings.', 'success')
+                else:
+                    flash(f'Incident created from anomaly successfully. Email notification sent. SMS notification failed: {sms_result.get("error")}', 'warning')
+            else:
+                flash(f'Incident created from anomaly successfully. Email notification sent. To receive SMS alerts, add your phone number in Settings.', 'success')
     else:
         flash('Incident created from anomaly successfully. Email notification sent.', 'success')
     return redirect(url_for('incident_response.incident_details', incident_id=incident.id))

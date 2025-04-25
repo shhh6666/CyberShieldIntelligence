@@ -9,6 +9,11 @@ from datetime import datetime
 
 analysis = Blueprint('analysis', __name__)
 
+# Add global context processor to provide 'now' to all templates
+@analysis.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
+
 @analysis.route('/anomaly_detection', methods=['GET', 'POST'])
 @login_required
 def anomaly_detection():

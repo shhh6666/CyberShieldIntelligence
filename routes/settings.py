@@ -10,6 +10,11 @@ import json
 
 settings = Blueprint('settings', __name__)
 
+# Add global context processor to provide 'now' to all templates
+@settings.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
+
 @settings.route('/settings', methods=['GET', 'POST'])
 @login_required
 def user_settings():

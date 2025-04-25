@@ -9,6 +9,11 @@ from datetime import datetime
 
 incident_response = Blueprint('incident_response', __name__)
 
+# Add global context processor to provide 'now' to all templates
+@incident_response.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
+
 @incident_response.route('/incident_response', methods=['GET', 'POST'])
 @login_required
 def manage_incidents():

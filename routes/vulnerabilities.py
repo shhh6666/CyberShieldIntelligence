@@ -9,6 +9,11 @@ from datetime import datetime
 
 vulnerabilities = Blueprint('vulnerabilities', __name__)
 
+# Add global context processor to provide 'now' to all templates
+@vulnerabilities.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
+
 @vulnerabilities.route('/vulnerability_management', methods=['GET', 'POST'])
 @login_required
 def vulnerability_management():

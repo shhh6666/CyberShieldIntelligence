@@ -296,9 +296,9 @@
                     </select>
                 </div>
                 
-                <a href="{{ url_for('incident_response.manage_incidents') }}" class="btn btn-primary create-incident-btn">
+                <button class="btn btn-primary create-incident-btn" data-toggle="modal" data-target="#createIncidentModal">
                     <i class="fas fa-plus"></i> Create Incident
-                </a>
+                </button>
             </div>
             
             <!-- Incident List -->
@@ -366,11 +366,86 @@
                         <i class="fas fa-clipboard-check fa-3x mb-3 text-secondary"></i>
                         <h3 class="text-secondary">No Incidents</h3>
                         <p>There are currently no security incidents to respond to.</p>
-                        <a href="{{ url_for('incident_response.manage_incidents') }}" class="btn btn-primary mt-3">
+                        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#createIncidentModal">
                             <i class="fas fa-plus"></i> Create Incident
-                        </a>
+                        </button>
                     </div>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Incident Modal -->
+<div class="modal fade" id="createIncidentModal" tabindex="-1" role="dialog" aria-labelledby="createIncidentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="createIncidentModalLabel">Create New Security Incident</h5>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('incident_response.manage_incidents') }}" id="incidentForm">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.title.label(class="form-control-label") }}
+                        {{ form.title(class="form-control bg-darker text-light border-secondary", placeholder="Enter incident title") }}
+                        <small class="form-text text-muted">Brief, descriptive title of the security incident</small>
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.title.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.severity.label(class="form-control-label") }}
+                        {{ form.severity(class="form-control bg-darker text-light border-secondary") }}
+                        <small class="form-text text-muted">Select the appropriate severity level</small>
+                        {% if form.severity.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.severity.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.description.label(class="form-control-label") }}
+                        {{ form.description(class="form-control bg-darker text-light border-secondary", rows=5, placeholder="Detailed description of the incident...") }}
+                        <small class="form-text text-muted">Include all relevant details, observations, and initial findings</small>
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.description.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.affected_systems.label(class="form-control-label") }}
+                        {{ form.affected_systems(class="form-control bg-darker text-light border-secondary", rows=3, placeholder="List affected systems, one per line...") }}
+                        <small class="form-text text-muted">Enter hostnames, IP addresses, or system names (one per line)</small>
+                        {% if form.affected_systems.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.affected_systems.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -18,6 +18,7 @@ def user_settings():
     # Pre-populate form with current values
     if request.method == 'GET':
         form.email.data = current_user.email
+        form.phone_number.data = current_user.phone_number if current_user.phone_number else ""
         
         # Load notification preferences if they exist
         try:
@@ -58,6 +59,9 @@ def user_settings():
         
         # Save MFA preference
         current_user.mfa_enabled = form.mfa_enabled.data
+        
+        # Save phone number for SMS notifications
+        current_user.phone_number = form.phone_number.data
         
         # Log the settings change
         activity = UserActivity(

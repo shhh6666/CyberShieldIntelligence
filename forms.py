@@ -75,6 +75,10 @@ class SettingsForm(FlaskForm):
         Email(), 
         Length(max=120)
     ])
+    phone_number = StringField('Phone Number (for SMS notifications)', validators=[
+        Optional(),
+        Length(max=20)
+    ])
     current_password = PasswordField('Current Password', validators=[DataRequired()])
     new_password = PasswordField('New Password', validators=[
         Optional(),

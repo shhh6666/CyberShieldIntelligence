@@ -7,6 +7,12 @@ from utils.email import send_welcome_email
 
 auth = Blueprint('auth', __name__)
 
+# Add global context processor to provide 'now' to all templates
+@auth.context_processor
+def inject_now():
+    from datetime import datetime
+    return {'now': datetime.utcnow()}
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:

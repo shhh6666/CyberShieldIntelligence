@@ -10,6 +10,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
+    notification_preferences = db.Column(db.Text, default='["email_critical"]')  # JSON string of notification prefs
+    theme_preference = db.Column(db.String(20), default='dark')
+    mfa_enabled = db.Column(db.Boolean, default=False)
+    mfa_secret = db.Column(db.String(32))  # For future MFA implementation
+    last_login = db.Column(db.DateTime)
     
     # Relationships
     alerts = db.relationship('Alert', backref='user', lazy='dynamic')

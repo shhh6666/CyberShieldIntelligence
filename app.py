@@ -62,12 +62,14 @@ from routes.analysis import analysis
 from routes.vulnerabilities import vulnerabilities
 from routes.incident_response import incident_response
 from routes.home import home_bp
+from routes.settings import settings
 
 app.register_blueprint(auth, url_prefix='/auth')
 app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(analysis, url_prefix='/analysis')
 app.register_blueprint(vulnerabilities, url_prefix='/vulnerabilities')
 app.register_blueprint(incident_response, url_prefix='/incidents')
+app.register_blueprint(settings, url_prefix='/settings')
 app.register_blueprint(home_bp)
 
 # Add global context processor for 'now' variable

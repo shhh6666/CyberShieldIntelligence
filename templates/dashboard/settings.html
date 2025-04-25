@@ -1,0 +1,453 @@
+{% extends "layout.html" %}
+
+{% block title %}Settings - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    .settings-tab {
+        background: rgba(15, 30, 60, 0.5);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 3px solid var(--neon-blue);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+    .settings-tab h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--neon-blue);
+        display: flex;
+        align-items: center;
+    }
+    .settings-tab h3 i {
+        margin-right: 0.75rem;
+    }
+    .settings-section {
+        margin-bottom: 2rem;
+    }
+    .form-group label {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    .checkbox-container input[type="checkbox"] {
+        margin-right: 0.75rem;
+    }
+    .settings-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .multi-select {
+        min-height: 120px;
+        background-color: rgba(15, 30, 60, 0.6);
+        color: white;
+        border: 1px solid rgba(0, 150, 255, 0.3);
+    }
+    .multi-select option {
+        padding: 8px 12px;
+    }
+    .multi-select option:checked {
+        background: linear-gradient(to right, rgba(0, 150, 255, 0.3), rgba(0, 150, 255, 0.1));
+        color: white;
+    }
+    .security-status {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        background-color: rgba(15, 30, 60, 0.6);
+    }
+    .security-status.good {
+        border-left: 3px solid var(--neon-green);
+    }
+    .security-status.warning {
+        border-left: 3px solid var(--neon-yellow);
+    }
+    .security-status i {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+    .security-status.good i {
+        color: var(--neon-green);
+    }
+    .security-status.warning i {
+        color: var(--neon-yellow);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="sidebar-brand-text">CyberTech</div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Core</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('home.index') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-home"></i></span>
+                <span class="nav-text">Home</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.home') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.dataset_manager') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-database"></i></span>
+                <span class="nav-text">Datasets</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Security</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.anomaly_detection') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-search"></i></span>
+                <span class="nav-text">Anomaly Detection</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.user_behavior') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-text">User Behavior</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('vulnerabilities.vulnerability_management') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-bug"></i></span>
+                <span class="nav-text">Vulnerabilities</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('incident_response.manage_incidents') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <span class="nav-text">Incident Response</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Account</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('settings.user_settings') }}" class="nav-link active">
+                <span class="nav-icon"><i class="fas fa-user-cog"></i></span>
+                <span class="nav-text">Settings</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Topbar -->
+        <div class="topbar">
+            <button class="topbar-toggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search topbar-search-icon"></i>
+                <input type="text" class="topbar-search-input" placeholder="Search...">
+            </div>
+            
+            <div class="topbar-nav">
+                <div class="topbar-nav-item">
+                    <a href="#" class="topbar-nav-link">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    {% if recent_alerts and recent_alerts|length > 0 %}
+                    <span class="topbar-nav-badge">{{ recent_alerts|length }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="topbar-user">
+                    <div class="topbar-user-name">{{ current_user.username }}</div>
+                    <div class="topbar-user-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="content container-fluid">
+            <h1 class="page-title">Settings</h1>
+            <p class="text-secondary mb-4">Manage your account and security preferences</p>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <form method="POST" action="" id="settings-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Account Settings -->
+                        <div class="settings-tab">
+                            <h3><i class="fas fa-user"></i> Account Information</h3>
+                            
+                            <div class="settings-section">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Username</label>
+                                            <input type="text" class="form-control" value="{{ current_user.username }}" disabled>
+                                            <small class="form-text text-muted">Username cannot be changed</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{ form.email.label }}</label>
+                                            {{ form.email(class="form-control") }}
+                                            {% if form.email.errors %}
+                                                {% for error in form.email.errors %}
+                                                    <div class="invalid-feedback">{{ error }}</div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Settings -->
+                        <div class="settings-tab">
+                            <h3><i class="fas fa-lock"></i> Security Settings</h3>
+                            
+                            <div class="settings-section">
+                                <div class="security-status good">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <div>
+                                        <strong>Account Security Status: Good</strong>
+                                        <div class="text-secondary">Your account security is up to date</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>{{ form.current_password.label }} <span class="text-danger">*</span></label>
+                                    {{ form.current_password(class="form-control") }}
+                                    {% if form.current_password.errors %}
+                                        {% for error in form.current_password.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <small class="form-text text-muted">Required to save any changes</small>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{ form.new_password.label }}</label>
+                                            {{ form.new_password(class="form-control") }}
+                                            {% if form.new_password.errors %}
+                                                {% for error in form.new_password.errors %}
+                                                    <div class="invalid-feedback">{{ error }}</div>
+                                                {% endfor %}
+                                            {% endif %}
+                                            <small class="form-text text-muted">Leave blank to keep current password</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{ form.confirm_password.label }}</label>
+                                            {{ form.confirm_password(class="form-control") }}
+                                            {% if form.confirm_password.errors %}
+                                                {% for error in form.confirm_password.errors %}
+                                                    <div class="invalid-feedback">{{ error }}</div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group mt-4">
+                                    <div class="custom-control custom-switch">
+                                        {{ form.mfa_enabled(class="custom-control-input") }}
+                                        <label class="custom-control-label" for="mfa_enabled">{{ form.mfa_enabled.label }}</label>
+                                    </div>
+                                    <small class="form-text text-muted">Multi-factor authentication adds an extra layer of security</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Notification Settings -->
+                        <div class="settings-tab">
+                            <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
+                            
+                            <div class="settings-section">
+                                <div class="form-group">
+                                    <label>{{ form.notification_preferences.label }}</label>
+                                    {{ form.notification_preferences(class="form-control multi-select", size=4) }}
+                                    {% if form.notification_preferences.errors %}
+                                        {% for error in form.notification_preferences.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <small class="form-text text-muted">Hold Ctrl (or Cmd) to select multiple options</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Interface Settings -->
+                        <div class="settings-tab">
+                            <h3><i class="fas fa-palette"></i> Interface Settings</h3>
+                            
+                            <div class="settings-section">
+                                <div class="form-group">
+                                    <label>{{ form.theme_preference.label }}</label>
+                                    {{ form.theme_preference(class="form-control") }}
+                                    {% if form.theme_preference.errors %}
+                                        {% for error in form.theme_preference.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-footer">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <a href="{{ url_for('dashboard.home') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="settings-tab">
+                        <h3><i class="fas fa-info-circle"></i> Account Information</h3>
+                        <div class="settings-info">
+                            <div class="mb-3">
+                                <div class="text-secondary">Account Created</div>
+                                <div>{{ current_user.created_at.strftime('%B %d, %Y') }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="text-secondary">Last Login</div>
+                                <div>{{ now.strftime('%B %d, %Y at %H:%M') }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="text-secondary">Account Type</div>
+                                <div>{% if current_user.is_admin %}Administrator{% else %}Standard User{% endif %}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-tab">
+                        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        <div class="settings-info">
+                            <div class="activity-list">
+                                {% if user_activities %}
+                                    {% for activity in user_activities %}
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            {% if activity.activity_type == 'login' %}
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            {% elif activity.activity_type == 'logout' %}
+                                                <i class="fas fa-sign-out-alt"></i>
+                                            {% elif activity.activity_type == 'file_upload' %}
+                                                <i class="fas fa-upload"></i>
+                                            {% elif activity.activity_type == 'analysis' %}
+                                                <i class="fas fa-search"></i>
+                                            {% elif activity.activity_type == 'settings_update' %}
+                                                <i class="fas fa-user-cog"></i>
+                                            {% else %}
+                                                <i class="fas fa-info-circle"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">{{ activity.activity_type|replace('_', ' ')|title }}</div>
+                                            <div class="activity-time">{{ activity.timestamp.strftime('%B %d, %Y at %H:%M') }}</div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-secondary">No recent activity to display</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize sidebar
+    initSidebar();
+    
+    // Initialize form validation
+    const settingsForm = document.getElementById('settings-form');
+    
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', function(e) {
+            // Basic client-side validation
+            const currentPassword = document.getElementById('current_password');
+            const newPassword = document.getElementById('new_password');
+            const confirmPassword = document.getElementById('confirm_password');
+            
+            if (!currentPassword.value.trim()) {
+                e.preventDefault();
+                currentPassword.classList.add('is-invalid');
+                currentPassword.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Current password is required to save changes</div>');
+                return false;
+            }
+            
+            if (newPassword.value && newPassword.value !== confirmPassword.value) {
+                e.preventDefault();
+                confirmPassword.classList.add('is-invalid');
+                confirmPassword.insertAdjacentHTML('afterend', '<div class="invalid-feedback">Passwords must match</div>');
+                return false;
+            }
+            
+            return true;
+        });
+    }
+    
+    // Theme preference preview
+    const themeSelect = document.getElementById('theme_preference');
+    if (themeSelect) {
+        themeSelect.addEventListener('change', function() {
+            // In a real implementation, this would show a preview of the theme
+            console.log('Theme changed to: ' + this.value);
+        });
+    }
+});
+</script>
+{% endblock %}

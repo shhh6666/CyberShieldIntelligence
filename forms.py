@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, SelectMultipleField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional
 from models import User
 
 class LoginForm(FlaskForm):
@@ -68,3 +68,37 @@ class IncidentResponseForm(FlaskForm):
     ], validators=[DataRequired()])
     affected_systems = TextAreaField('Affected Systems')
     submit = SubmitField('Create Incident')
+    
+class SettingsForm(FlaskForm):
+    email = StringField('Email Address', validators=[
+        DataRequired(), 
+        Email(), 
+        Length(max=120)
+    ])
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[
+        Optional(),
+        Length(min=8, message='Password must be at least 8 characters long')
+    ])
+    confirm_password = PasswordField('Confirm New Password', validators=[
+        EqualTo('new_password', message='Passwords must match')
+    ])
+    notification_preferences = SelectMultipleField('Notification Preferences',
+        choices=[
+            ('email_critical', 'Email me about critical security alerts'),
+            ('email_all', 'Email me about all security alerts'),
+            ('activity_summary', 'Weekly activity summary'),
+            ('security_tips', 'Security tips and recommendations')
+        ],
+        default=['email_critical']
+    )
+    theme_preference = SelectField('Interface Theme',
+        choices=[
+            ('dark', 'Dark (Default)'),
+            ('light', 'Light'),
+            ('system', 'Use System Preference')
+        ],
+        default='dark'
+    )
+    mfa_enabled = BooleanField('Enable Multi-Factor Authentication', default=False)
+    submit = SubmitField('Save Settings')

@@ -1,0 +1,888 @@
+{% extends "layout.html" %}
+
+{% block title %}Futuristic Dashboard - CyberTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/futuristic-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="sidebar-brand-text">CyberTech</div>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Core</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('home.index') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-home"></i></span>
+                <span class="nav-text">Home</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.home') }}" class="nav-link active">
+                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('dashboard.dataset_manager') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-database"></i></span>
+                <span class="nav-text">Datasets</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Security</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.anomaly_detection') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-search"></i></span>
+                <span class="nav-text">Anomaly Detection</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('analysis.user_behavior') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-text">User Behavior</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('vulnerabilities.vulnerability_management') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-bug"></i></span>
+                <span class="nav-text">Vulnerabilities</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('incident_response.manage_incidents') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <span class="nav-text">Incident Response</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-heading">Account</div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('settings.user_settings') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-user-cog"></i></span>
+                <span class="nav-text">Settings</span>
+            </a>
+        </div>
+        
+        <div class="nav-item">
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">
+                <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Topbar -->
+        <div class="topbar">
+            <button class="topbar-toggler">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search topbar-search-icon"></i>
+                <input type="text" class="topbar-search-input" placeholder="Search...">
+            </div>
+            
+            <div class="topbar-nav">
+                <div class="topbar-nav-item">
+                    <a href="#" class="topbar-nav-link">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    {% if recent_alerts and recent_alerts|length > 0 %}
+                    <span class="topbar-nav-badge">{{ recent_alerts|length }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        {{ current_user.username[0] }}
+                    </div>
+                    <div class="topbar-user-info">
+                        <div class="topbar-user-name">{{ current_user.username }}</div>
+                        <div class="topbar-user-role">{% if current_user.is_admin %}Administrator{% else %}User{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="container">
+            <h1 class="mb-4">
+                <span class="glow-text">CyberTech Security Command Center</span>
+                <div class="pulse-dot"></div>
+                <small style="font-size: 0.8rem; opacity: 0.7;">System Status: Active</small>
+            </h1>
+            
+            <!-- Futuristic Dashboard -->
+            <div class="futuristic-dashboard">
+                <div class="hex-grid"></div>
+                
+                <!-- Futuristic Stats -->
+                <div class="futuristic-stats">
+                    <div class="futuristic-stat">
+                        <div class="futuristic-stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="futuristic-stat-value">{{ security_score|default('87') }}</div>
+                        <div class="futuristic-stat-title">Security Score</div>
+                        <div class="futuristic-stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 3.2% vs last week
+                        </div>
+                    </div>
+                    
+                    <div class="futuristic-stat">
+                        <div class="futuristic-stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="futuristic-stat-value">{{ active_threats|default(total_anomalies) }}</div>
+                        <div class="futuristic-stat-title">Active Threats</div>
+                        <div class="futuristic-stat-trend trend-down">
+                            <i class="fas fa-arrow-down"></i> 8.7% vs last week
+                        </div>
+                    </div>
+                    
+                    <div class="futuristic-stat">
+                        <div class="futuristic-stat-icon">
+                            <i class="fas fa-shield-virus"></i>
+                        </div>
+                        <div class="futuristic-stat-value">{{ blocked_attacks|default('142k') }}</div>
+                        <div class="futuristic-stat-title">Blocked Attacks</div>
+                        <div class="futuristic-stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 12.3% vs last week
+                        </div>
+                    </div>
+                    
+                    <div class="futuristic-stat">
+                        <div class="futuristic-stat-icon">
+                            <i class="fas fa-bug"></i>
+                        </div>
+                        <div class="futuristic-stat-value">{{ vulnerability_score|default('94.2') }}</div>
+                        <div class="futuristic-stat-title">Vulnerability Score</div>
+                        <div class="futuristic-stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 1.5% vs last week
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <!-- Global Threat Map -->
+                    <div class="col-md-8">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-globe"></i> Global Threat Map</h3>
+                                <div>
+                                    <span class="glow-text">Live</span>
+                                </div>
+                            </div>
+                            <div class="threat-map-container">
+                                <div id="threatMap" class="threat-map"></div>
+                                <div class="map-overlay">
+                                    <div class="map-legend">
+                                        <div class="map-legend-icon legend-critical"></div>
+                                        <span>Critical Threats</span>
+                                    </div>
+                                    <div class="map-legend">
+                                        <div class="map-legend-icon legend-high"></div>
+                                        <span>High Impact Attacks</span>
+                                    </div>
+                                    <div class="map-legend">
+                                        <div class="map-legend-icon legend-medium"></div>
+                                        <span>Medium Risk Activity</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Security Score Visualization -->
+                    <div class="col-md-4">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-tachometer-alt"></i> Security Health</h3>
+                            </div>
+                            <div class="cybersecurity-score">
+                                <div class="score-content">
+                                    <div class="score-ring">
+                                        <canvas id="securityHealthChart"></canvas>
+                                    </div>
+                                    <div class="score-number">{{ security_score|default('87') }}</div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Network Security</span>
+                                    <span>92%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 92%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Data Protection</span>
+                                    <span>87%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 87%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Identity Management</span>
+                                    <span>95%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 95%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Threat Detection</span>
+                                    <span>82%</span>
+                                </div>
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 82%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <!-- Anomaly Distribution -->
+                    <div class="col-md-6">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-chart-pie"></i> Threat Distribution</h3>
+                                <div>
+                                    <select class="form-control form-control-sm bg-dark text-light border-0" style="width: auto;">
+                                        <option>Last 7 Days</option>
+                                        <option>Last 30 Days</option>
+                                        <option>Last Quarter</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="height: 250px;">
+                                <canvas id="threatDistributionChart" 
+                                        data-critical="{{ critical_anomalies }}"
+                                        data-high="{{ high_anomalies }}"
+                                        data-medium="{{ medium_anomalies }}"
+                                        data-low="{{ low_anomalies }}"></canvas>
+                            </div>
+                            <div class="d-flex justify-content-around text-center mt-2">
+                                <div>
+                                    <div class="threat-badge threat-critical">Critical</div>
+                                    <div class="mt-1">{{ critical_anomalies }}%</div>
+                                </div>
+                                <div>
+                                    <div class="threat-badge threat-high">High</div>
+                                    <div class="mt-1">{{ high_anomalies }}%</div>
+                                </div>
+                                <div>
+                                    <div class="threat-badge threat-medium">Medium</div>
+                                    <div class="mt-1">{{ medium_anomalies }}%</div>
+                                </div>
+                                <div>
+                                    <div class="threat-badge threat-low">Low</div>
+                                    <div class="mt-1">{{ low_anomalies }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attack Types -->
+                    <div class="col-md-6">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-virus"></i> Attack Types</h3>
+                            </div>
+                            <div style="height: 280px;">
+                                <canvas id="attackTypesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <!-- Anomaly Time Series -->
+                    <div class="col-md-8">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-chart-line"></i> Security Trends</h3>
+                                <div>
+                                    <button class="btn btn-sm btn-dark border-0 mr-1">Day</button>
+                                    <button class="btn btn-sm btn-dark border-0 mr-1">Week</button>
+                                    <button class="btn btn-sm btn-dark border-0">Month</button>
+                                </div>
+                            </div>
+                            <div style="height: 300px;">
+                                <canvas id="securityTrendsChart" 
+                                        data-chart-data="{{ anomaly_time_series|tojson }}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Timeline -->
+                    <div class="col-md-4">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-history"></i> Security Activity</h3>
+                            </div>
+                            <ul class="activity-timeline">
+                                {% if user_activities and user_activities|length > 0 %}
+                                    {% for activity in user_activities[:5] %}
+                                        <li class="timeline-item">
+                                            <div class="timeline-icon">
+                                                {% if activity.activity_type == 'login' %}
+                                                    <i class="fas fa-sign-in-alt"></i>
+                                                {% elif activity.activity_type == 'logout' %}
+                                                    <i class="fas fa-sign-out-alt"></i>
+                                                {% elif activity.activity_type == 'file_upload' %}
+                                                    <i class="fas fa-upload"></i>
+                                                {% elif activity.activity_type == 'analysis' %}
+                                                    <i class="fas fa-search"></i>
+                                                {% elif activity.activity_type == 'settings_update' %}
+                                                    <i class="fas fa-user-cog"></i>
+                                                {% else %}
+                                                    <i class="fas fa-info-circle"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="timeline-content">
+                                                <h5 class="timeline-title">{{ activity.activity_type|replace('_', ' ')|title }}</h5>
+                                                <p class="timeline-description">{{ activity.details }}</p>
+                                                <span class="timeline-time">{{ activity.timestamp.strftime('%B %d, %Y at %H:%M') }}</span>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="timeline-item">
+                                        <div class="timeline-icon">
+                                            <i class="fas fa-info-circle"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h5 class="timeline-title">No Recent Activity</h5>
+                                            <p class="timeline-description">There is no recent security activity to display.</p>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <!-- Data Flow Visualization -->
+                    <div class="col-lg-12">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-project-diagram"></i> Network Traffic Analysis</h3>
+                                <div>
+                                    <span class="glow-text">Live</span>
+                                </div>
+                            </div>
+                            <div class="data-flow">
+                                <canvas id="networkTrafficChart"></canvas>
+                            </div>
+                            <div class="row mt-3 text-center">
+                                <div class="col">
+                                    <div class="text-muted small">Inbound Traffic</div>
+                                    <div class="h5 glow-text">1.2 GB/s</div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted small">Outbound Traffic</div>
+                                    <div class="h5 glow-text">964 MB/s</div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted small">Blocked Connections</div>
+                                    <div class="h5 glow-text">236</div>
+                                </div>
+                                <div class="col">
+                                    <div class="text-muted small">Network Latency</div>
+                                    <div class="h5 glow-text">28ms</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Recent Critical Alerts -->
+                    <div class="col-md-6">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-exclamation-circle"></i> Critical Alerts</h3>
+                                <button class="futuristic-btn">View All</button>
+                            </div>
+                            {% if recent_alerts and recent_alerts|length > 0 %}
+                                <div class="alert-list">
+                                    {% for alert in recent_alerts %}
+                                        {% if alert.severity == 'critical' or alert.severity == 'high' %}
+                                            <div class="alert-item alert-item-{{ alert.severity }} mb-3" data-alert-id="{{ alert.id }}">
+                                                <div class="alert-icon alert-icon-{{ alert.severity }}">
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                </div>
+                                                <div class="alert-content">
+                                                    <div class="alert-title font-weight-bold">{{ alert.title }}</div>
+                                                    <div class="alert-desc small">{{ alert.description }}</div>
+                                                    <div class="alert-meta mt-1">
+                                                        <span class="alert-time small text-muted">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                                        <span class="threat-badge threat-{{ alert.severity }} ml-2">{{ alert.severity }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center p-4 text-secondary">
+                                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                                    <p>No critical alerts. Your security status is good.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Threat Intelligence -->
+                    <div class="col-md-6">
+                        <div class="futuristic-card">
+                            <div class="futuristic-card-header">
+                                <h3><i class="fas fa-brain"></i> Threat Intelligence</h3>
+                            </div>
+                            <div class="p-3">
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Predictive Threat Analysis</span>
+                                        <span class="glow-text">Active</span>
+                                    </div>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                
+                                <h6 class="text-muted mb-3">Emerging Threat Vectors</h6>
+                                
+                                <div class="d-flex align-items-center mb-3 p-2 glow-border" style="border-radius: 8px;">
+                                    <div class="mr-3 text-center" style="width: 40px;">
+                                        <i class="fas fa-virus" style="font-size: 1.5rem; color: var(--neon-pink);"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-weight-bold">Polymorphic Malware</div>
+                                        <div class="small text-muted">Increasing prevalence in financial sector</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="threat-badge threat-high">High</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-3 p-2" style="border-radius: 8px; background: rgba(10, 25, 41, 0.3);">
+                                    <div class="mr-3 text-center" style="width: 40px;">
+                                        <i class="fas fa-user-secret" style="font-size: 1.5rem; color: var(--neon-blue);"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-weight-bold">Advanced Phishing Campaigns</div>
+                                        <div class="small text-muted">Targeting executive management</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="threat-badge threat-medium">Medium</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center p-2" style="border-radius: 8px; background: rgba(10, 25, 41, 0.3);">
+                                    <div class="mr-3 text-center" style="width: 40px;">
+                                        <i class="fas fa-network-wired" style="font-size: 1.5rem; color: var(--neon-green);"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-weight-bold">IoT Botnet Activities</div>
+                                        <div class="small text-muted">New variants detected in APAC region</div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="threat-badge threat-critical">Critical</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.0.0/dist/d3.min.js"></script>
+<script src="{{ url_for('static', filename='js/app-cache.js') }}"></script>
+<script src="{{ url_for('static', filename='js/futuristic-dashboard.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize sidebar
+    const sidebarToggler = document.querySelector('.topbar-toggler');
+    const sidebar = document.querySelector('.sidebar');
+    const contentWrapper = document.querySelector('.content-wrapper');
+    
+    sidebarToggler.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed');
+        contentWrapper.classList.toggle('expanded');
+    });
+    
+    // Initialize Security Health Chart
+    const securityHealthCtx = document.getElementById('securityHealthChart');
+    if (securityHealthCtx) {
+        new Chart(securityHealthCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [87, 13],
+                    backgroundColor: [
+                        'rgba(0, 243, 255, 0.8)',
+                        'rgba(0, 243, 255, 0.1)'
+                    ],
+                    borderWidth: 0,
+                    cutout: '85%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize Threat Distribution Chart
+    const threatDistributionCtx = document.getElementById('threatDistributionChart');
+    if (threatDistributionCtx) {
+        // Get values from data attributes or use defaults
+        const critical = parseInt(threatDistributionCtx.dataset.critical) || 15;
+        const high = parseInt(threatDistributionCtx.dataset.high) || 25;
+        const medium = parseInt(threatDistributionCtx.dataset.medium) || 40;
+        const low = parseInt(threatDistributionCtx.dataset.low) || 20;
+        
+        new Chart(threatDistributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    data: [critical, high, medium, low],
+                    backgroundColor: [
+                        'rgba(255, 59, 59, 0.8)',
+                        'rgba(255, 143, 59, 0.8)',
+                        'rgba(255, 206, 59, 0.8)',
+                        'rgba(59, 206, 255, 0.8)'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize Attack Types Chart
+    const attackTypesCtx = document.getElementById('attackTypesChart');
+    if (attackTypesCtx) {
+        new Chart(attackTypesCtx, {
+            type: 'polarArea',
+            data: {
+                labels: ['Malware', 'Phishing', 'DDoS', 'Insider', 'Zero-day', 'Other'],
+                datasets: [{
+                    data: [35, 28, 17, 12, 8, 5],
+                    backgroundColor: [
+                        'rgba(0, 243, 255, 0.7)',
+                        'rgba(157, 0, 255, 0.7)',
+                        'rgba(0, 255, 139, 0.7)',
+                        'rgba(255, 59, 59, 0.7)',
+                        'rgba(255, 143, 59, 0.7)',
+                        'rgba(59, 206, 255, 0.7)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        angleLines: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        pointLabels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: {
+                                size: 10
+                            },
+                            boxWidth: 10,
+                            padding: 10
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize Security Trends Chart
+    const securityTrendsCtx = document.getElementById('securityTrendsChart');
+    if (securityTrendsCtx) {
+        const chartData = securityTrendsCtx.dataset.chartData ? JSON.parse(securityTrendsCtx.dataset.chartData) : null;
+        
+        // Use provided data or fallback to demo data
+        const labels = chartData?.labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const anomalies = chartData?.anomalies || [25, 35, 28, 42, 36, 30, 27];
+        const vulnerabilities = chartData?.vulnerabilities || [15, 18, 20, 25, 22, 19, 17];
+        const incidents = chartData?.incidents || [5, 8, 7, 11, 9, 6, 5];
+        
+        new Chart(securityTrendsCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Anomalies',
+                        data: anomalies,
+                        borderColor: 'rgba(255, 59, 59, 0.8)',
+                        backgroundColor: 'rgba(255, 59, 59, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(255, 59, 59, 1)',
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Vulnerabilities',
+                        data: vulnerabilities,
+                        borderColor: 'rgba(255, 143, 59, 0.8)',
+                        backgroundColor: 'rgba(255, 143, 59, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(255, 143, 59, 1)',
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Incidents',
+                        data: incidents,
+                        borderColor: 'rgba(0, 243, 255, 0.8)',
+                        backgroundColor: 'rgba(0, 243, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(0, 243, 255, 1)',
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            boxWidth: 12,
+                            padding: 15
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            padding: 10
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Initialize Network Traffic Chart
+    const networkTrafficCtx = document.getElementById('networkTrafficChart');
+    if (networkTrafficCtx) {
+        // Generate random data for the network traffic
+        const generateNetworkData = () => {
+            return Array.from({length: 50}, () => Math.floor(Math.random() * 50) + 50);
+        };
+        
+        const networkTrafficChart = new Chart(networkTrafficCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 50}, (_, i) => i),
+                datasets: [
+                    {
+                        label: 'Inbound',
+                        data: generateNetworkData(),
+                        borderColor: 'rgba(0, 243, 255, 0.8)',
+                        backgroundColor: 'rgba(0, 243, 255, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Outbound',
+                        data: generateNetworkData(),
+                        borderColor: 'rgba(0, 255, 139, 0.8)',
+                        backgroundColor: 'rgba(0, 255, 139, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            boxWidth: 12,
+                            padding: 15
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                },
+                elements: {
+                    line: {
+                        borderWidth: 2
+                    }
+                },
+                animation: {
+                    duration: 0
+                }
+            }
+        });
+        
+        // Update network traffic chart with new data every 2 seconds
+        setInterval(() => {
+            networkTrafficChart.data.datasets[0].data = generateNetworkData();
+            networkTrafficChart.data.datasets[1].data = generateNetworkData();
+            networkTrafficChart.update();
+        }, 2000);
+    }
+    
+    // Simple visualization for the threat map
+    const threatMap = document.getElementById('threatMap');
+    if (threatMap) {
+        // This is a simplified placeholder. In a real application,
+        // you would use a proper mapping library like Leaflet or MapboxGL
+        const mapSvg = d3.select(threatMap)
+            .append('svg')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .style('background', 'transparent');
+        
+        // Draw some threat indicators
+        const drawThreats = () => {
+            // Clear previous threats
+            mapSvg.selectAll('.threat').remove();
+            
+            // Generate random threat positions
+            const threats = Array.from({length: 20}, () => ({
+                x: Math.random() * 100,
+                y: Math.random() * 100,
+                type: Math.random() > 0.7 ? 'critical' : (Math.random() > 0.5 ? 'high' : 'medium'),
+                radius: Math.random() * 10 + 5
+            }));
+            
+            // Draw threats
+            mapSvg.selectAll('.threat')
+                .data(threats)
+                .enter()
+                .append('circle')
+                .attr('class', 'threat')
+                .attr('cx', d => `${d.x}%`)
+                .attr('cy', d => `${d.y}%`)
+                .attr('r', d => d.radius)
+                .style('fill', d => {
+                    if (d.type === 'critical') return 'rgba(255, 59, 59, 0.8)';
+                    if (d.type === 'high') return 'rgba(255, 143, 59, 0.8)';
+                    return 'rgba(255, 206, 59, 0.8)';
+                })
+                .style('filter', 'blur(3px)')
+                .transition()
+                .duration(2000)
+                .style('opacity', 0.3)
+                .attr('r', d => d.radius * 2);
+        };
+        
+        // Initial draw
+        drawThreats();
+        
+        // Periodically update threats
+        setInterval(drawThreats, 3000);
+    }
+});
+</script>
+{% endblock %}

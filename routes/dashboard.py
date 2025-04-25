@@ -54,8 +54,27 @@ def home():
             })
         anomaly_time_series.reverse()  # Show oldest to newest
         
-        return render_template('dashboard/home.html', 
-                              title='Dashboard', 
+        # Get user activities
+        user_activities = UserActivity.query.filter_by(user_id=current_user.id).order_by(UserActivity.timestamp.desc()).limit(5).all()
+        
+        # Calculate security scores for the futuristic dashboard
+        active_threats = Anomaly.query.filter(Anomaly.is_false_positive == False, 
+                                           Anomaly.severity.in_(['critical', 'high'])).count()
+        security_score = 100 - min(active_threats * 2, 25)  # Reduce score based on threats
+        
+        # Calculate percentages for charts
+        total_anomaly_count = critical_anomalies + high_anomalies + medium_anomalies + low_anomalies
+        if total_anomaly_count > 0:
+            critical_percent = int((critical_anomalies / total_anomaly_count) * 100)
+            high_percent = int((high_anomalies / total_anomaly_count) * 100)
+            medium_percent = int((medium_anomalies / total_anomaly_count) * 100)
+            low_percent = int((low_anomalies / total_anomaly_count) * 100)
+        else:
+            critical_percent = high_percent = medium_percent = low_percent = 0
+            
+        # Use the new futuristic dashboard template
+        return render_template('dashboard/futuristic_dashboard.html', 
+                              title='Futuristic Dashboard', 
                               recent_alerts=recent_alerts,
                               recent_anomalies=recent_anomalies,
                               recent_vulnerabilities=recent_vulnerabilities,
@@ -63,11 +82,14 @@ def home():
                               total_analyses=total_analyses,
                               total_anomalies=total_anomalies,
                               total_vulnerabilities=total_vulnerabilities,
-                              critical_anomalies=critical_anomalies,
-                              high_anomalies=high_anomalies,
-                              medium_anomalies=medium_anomalies,
-                              low_anomalies=low_anomalies,
-                              anomaly_time_series=anomaly_time_series)
+                              critical_anomalies=critical_percent,
+                              high_anomalies=high_percent,
+                              medium_anomalies=medium_percent,
+                              low_anomalies=low_percent,
+                              anomaly_time_series=anomaly_time_series,
+                              user_activities=user_activities,
+                              security_score=security_score,
+                              active_threats=active_threats)
     else:
         return render_template('index.html', title='Welcome to CyberTech')
 

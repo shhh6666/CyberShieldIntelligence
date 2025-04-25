@@ -440,117 +440,181 @@
         </div>
     </div>
     
-    <!-- Security Shield Visualization -->
-    <div class="security-shield">
-        <div class="shield-container">
-            <div class="shield"></div>
-            <i class="fas fa-shield-alt shield-icon"></i>
-            
-            <!-- Data Streams -->
-            <div class="data-stream" style="top: 30%; animation-delay: 0s;"></div>
-            <div class="data-stream" style="top: 40%; animation-delay: 0.5s;"></div>
-            <div class="data-stream" style="top: 50%; animation-delay: 1s;"></div>
-            <div class="data-stream" style="top: 60%; animation-delay: 1.5s;"></div>
-            <div class="data-stream" style="top: 70%; animation-delay: 2s;"></div>
-            
-            <!-- Floating Security Icons -->
-            <div class="floating-icons">
-                <i class="fas fa-wifi floating-icon" style="top: 20%; left: 10%; animation-delay: 0s;"></i>
-                <i class="fas fa-lock floating-icon" style="top: 30%; right: 15%; animation-delay: 1s;"></i>
-                <i class="fas fa-fingerprint floating-icon" style="bottom: 25%; left: 12%; animation-delay: 2s;"></i>
-                <i class="fas fa-database floating-icon" style="bottom: 15%; right: 10%; animation-delay: 1.5s;"></i>
+    <!-- Welcome Message Visual -->
+    <div class="welcome-container" style="position: relative; background: rgba(15, 30, 61, 0.4); border-radius: 12px; margin: 2rem 0 4rem; overflow: hidden; padding: 2.5rem; border: 1px solid rgba(0, 225, 255, 0.2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+        <!-- Background effects -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(125deg, rgba(0, 225, 255, 0.05) 0%, rgba(157, 0, 255, 0.05) 100%); z-index: 0;"></div>
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 225, 255, 0.1) 0%, transparent 70%); z-index: 0;"></div>
+        
+        <!-- Text content with visual elements -->
+        <div class="row align-items-center" style="position: relative; z-index: 1;">
+            <div class="col-md-7">
+                <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-green)); -webkit-background-clip: text; background-clip: text; color: transparent;">WELCOME TO COMMAND CENTER</h2>
+                <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; line-height: 1.6;">Access your centralized security dashboard with real-time metrics and advanced threat intelligence.</p>
+                
+                <!-- Animated typing cursor effect -->
+                <div style="font-family: monospace; color: var(--neon-blue); margin-bottom: 1rem; font-size: 1rem;">
+                    <span>System status:</span>
+                    <span style="color: var(--neon-green);">Online</span>
+                    <span class="blink" style="display: inline-block; width: 10px; height: 18px; background-color: var(--neon-blue); margin-left: 5px; animation: blink 1s infinite; position: relative; top: 3px;"></span>
+                </div>
             </div>
             
-            <!-- Signal Waves (Telecommunications) -->
-            <div class="signal-waves">
-                <div class="signal-wave" style="top: 50%; left: 50%; width: 60px; height: 60px; animation-delay: 0s;"></div>
-                <div class="signal-wave" style="top: 50%; left: 50%; width: 100px; height: 100px; animation-delay: 1s;"></div>
-                <div class="signal-wave" style="top: 50%; left: 50%; width: 140px; height: 140px; animation-delay: 2s;"></div>
-                <div class="signal-wave" style="top: 50%; left: 50%; width: 180px; height: 180px; animation-delay: 3s;"></div>
+            <div class="col-md-5">
+                <!-- Security Shield with effects -->
+                <div class="security-shield" style="position: relative; width: 100%; height: 200px;">
+                    <div class="shield-container" style="position: relative; width: 150px; height: 180px; margin: 0 auto;">
+                        <div class="shield" style="position: absolute; width: 100%; height: 100%; background: radial-gradient(circle at center, var(--neon-blue) 0%, transparent 70%); opacity: 0.1; animation: shield-pulse 3s infinite;"></div>
+                        <i class="fas fa-shield-alt shield-icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; color: var(--neon-blue); opacity: 0.8; z-index: 2;"></i>
+                        
+                        <!-- Data Streams -->
+                        <div class="data-stream" style="position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--neon-blue), transparent); opacity: 0; animation: data-flow 3s infinite; top: 30%; animation-delay: 0s;"></div>
+                        <div class="data-stream" style="position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--neon-blue), transparent); opacity: 0; animation: data-flow 3s infinite; top: 50%; animation-delay: 1s;"></div>
+                        <div class="data-stream" style="position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--neon-blue), transparent); opacity: 0; animation: data-flow 3s infinite; top: 70%; animation-delay: 2s;"></div>
+                        
+                        <!-- Signal Waves (Telecommunications) -->
+                        <div class="signal-waves" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                            <div class="signal-wave" style="position: absolute; border: 2px solid var(--neon-green); border-radius: 50%; opacity: 0; animation: signal-wave 4s infinite; top: 50%; left: 50%; width: 50px; height: 50px; margin-top: -25px; margin-left: -25px; animation-delay: 0s;"></div>
+                            <div class="signal-wave" style="position: absolute; border: 2px solid var(--neon-green); border-radius: 50%; opacity: 0; animation: signal-wave 4s infinite; top: 50%; left: 50%; width: 80px; height: 80px; margin-top: -40px; margin-left: -40px; animation-delay: 1s;"></div>
+                            <div class="signal-wave" style="position: absolute; border: 2px solid var(--neon-green); border-radius: 50%; opacity: 0; animation: signal-wave 4s infinite; top: 50%; left: 50%; width: 110px; height: 110px; margin-top: -55px; margin-left: -55px; animation-delay: 2s;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status indicators -->
+        <div class="row mt-4" style="position: relative; z-index: 1;">
+            <div class="col-md-3 col-6">
+                <div style="text-align: center; padding: 0.5rem;">
+                    <i class="fas fa-wifi" style="color: var(--neon-green); font-size: 1.25rem;"></i>
+                    <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); margin-top: 0.25rem;">Network Secure</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div style="text-align: center; padding: 0.5rem;">
+                    <i class="fas fa-lock" style="color: var(--neon-blue); font-size: 1.25rem;"></i>
+                    <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); margin-top: 0.25rem;">Encryption Active</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div style="text-align: center; padding: 0.5rem;">
+                    <i class="fas fa-satellite-dish" style="color: var(--neon-purple); font-size: 1.25rem;"></i>
+                    <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); margin-top: 0.25rem;">Signal Optimal</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div style="text-align: center; padding: 0.5rem;">
+                    <i class="fas fa-shield-alt" style="color: var(--neon-pink); font-size: 1.25rem;"></i>
+                    <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); margin-top: 0.25rem;">Firewall Active</div>
+                </div>
             </div>
         </div>
     </div>
     
+    <style>
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
+    @keyframes shield-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.1; }
+        50% { transform: scale(1.1); opacity: 0.2; }
+    }
+    
+    @keyframes data-flow {
+        0% { transform: translateX(-100%); opacity: 0; }
+        50% { opacity: 0.7; }
+        100% { transform: translateX(100%); opacity: 0; }
+    }
+    
+    @keyframes signal-wave {
+        0% { transform: scale(0); opacity: 0.5; }
+        100% { transform: scale(1); opacity: 0; }
+    }
+    </style>
+    
     <!-- System Overview -->
     <div class="feature-container">
-        <h2 class="text-center mb-4" style="font-size: 2.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px rgba(0, 225, 255, 0.3);">SYSTEM OVERVIEW</h2>
+        <h2 class="text-center mb-5" style="font-size: 2.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px rgba(0, 225, 255, 0.3);">SYSTEM OVERVIEW</h2>
         
-        <div class="system-overview-container" style="position: relative; background: rgba(15, 30, 61, 0.5); border-radius: 12px; padding: 2rem; border: 1px solid rgba(0, 225, 255, 0.3); backdrop-filter: blur(10px); overflow: hidden;">
+        <div class="system-overview-container" style="position: relative; background: rgba(15, 30, 61, 0.5); border-radius: 12px; padding: 2.5rem; border: 1px solid rgba(0, 225, 255, 0.3); backdrop-filter: blur(10px); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
             <!-- Background elements -->
             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, rgba(0, 225, 255, 0.05) 0%, transparent 70%); z-index: 0;"></div>
             <div style="position: absolute; top: 20px; right: 20px; font-size: 120px; opacity: 0.03; color: var(--neon-blue); z-index: 0;"><i class="fas fa-shield-alt"></i></div>
             
             <!-- System metrics -->
-            <div class="row" style="position: relative; z-index: 2;">
-                <div class="col-md-6">
-                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-blue);">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">Security Status</h3>
-                            <i class="fas fa-check-circle" style="font-size: 1.5rem; color: var(--neon-green);"></i>
+            <div class="row g-4" style="position: relative; z-index: 2;">
+                <div class="col-lg-6">
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border-left: 3px solid var(--neon-blue); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 style="font-size: 1.5rem; margin: 0; color: white;">Security Status</h3>
+                            <i class="fas fa-check-circle" style="font-size: 1.75rem; color: var(--neon-green);"></i>
                         </div>
-                        <div class="progress" style="height: 10px; background: rgba(0, 225, 255, 0.1); border-radius: 5px; overflow: hidden; margin-bottom: 0.5rem;">
+                        <div class="progress" style="height: 12px; background: rgba(0, 225, 255, 0.1); border-radius: 6px; overflow: hidden; margin-bottom: 1rem;">
                             <div class="progress-bar" style="width: 85%; height: 100%; background: linear-gradient(to right, var(--neon-green), var(--neon-blue));"></div>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Defense Strength</span>
-                            <span style="font-size: 0.85rem; color: var(--neon-blue);">85%</span>
+                            <span style="font-size: 1rem; color: rgba(255, 255, 255, 0.7);">Defense Strength</span>
+                            <span style="font-size: 1rem; color: var(--neon-blue); font-weight: 600;">85%</span>
                         </div>
                     </div>
                     
-                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-purple);">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">Network Monitoring</h3>
-                            <i class="fas fa-broadcast-tower" style="font-size: 1.5rem; color: var(--neon-purple);"></i>
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border-left: 3px solid var(--neon-purple); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 style="font-size: 1.5rem; margin: 0; color: white;">Network Monitoring</h3>
+                            <i class="fas fa-broadcast-tower" style="font-size: 1.75rem; color: var(--neon-purple);"></i>
                         </div>
-                        <div style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">42</div>
-                        <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Active endpoints secured</div>
+                        <div style="font-size: 3.5rem; font-weight: 700; color: white; margin-bottom: 1rem; text-align: center;">42</div>
+                        <div style="font-size: 1rem; color: rgba(255, 255, 255, 0.7); text-align: center;">Active endpoints secured</div>
                     </div>
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-pink);">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">Threat Intelligence</h3>
-                            <i class="fas fa-chart-line" style="font-size: 1.5rem; color: var(--neon-pink);"></i>
+                <div class="col-lg-6">
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border-left: 3px solid var(--neon-pink); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 style="font-size: 1.5rem; margin: 0; color: white;">Threat Intelligence</h3>
+                            <i class="fas fa-chart-line" style="font-size: 1.75rem; color: var(--neon-pink);"></i>
                         </div>
-                        <div class="row text-center">
+                        <div class="row text-center g-3">
                             <div class="col-4">
-                                <div style="font-size: 2rem; font-weight: 700; color: white;">3</div>
-                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">Critical</div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: white;">3</div>
+                                <div style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">Critical</div>
                             </div>
                             <div class="col-4">
-                                <div style="font-size: 2rem; font-weight: 700; color: white;">12</div>
-                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">Warnings</div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: white;">12</div>
+                                <div style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">Warnings</div>
                             </div>
                             <div class="col-4">
-                                <div style="font-size: 2rem; font-weight: 700; color: white;">67</div>
-                                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);">Blocked</div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: white;">67</div>
+                                <div style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">Blocked</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--neon-green);">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 style="font-size: 1.35rem; margin: 0; color: white;">System Resources</h3>
-                            <i class="fas fa-microchip" style="font-size: 1.5rem; color: var(--neon-green);"></i>
+                    <div class="system-metric-panel" style="background: rgba(9, 17, 36, 0.7); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border-left: 3px solid var(--neon-green); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 style="font-size: 1.5rem; margin: 0; color: white;">System Resources</h3>
+                            <i class="fas fa-microchip" style="font-size: 1.75rem; color: var(--neon-green);"></i>
                         </div>
-                        <div class="d-flex justify-content-between align-items-end mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.25rem;">Processor</div>
-                                <div class="progress" style="height: 5px; width: 100px; background: rgba(0, 225, 255, 0.1); border-radius: 5px; overflow: hidden;">
+                                <div style="font-size: 1rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">Processor</div>
+                                <div class="progress" style="height: 8px; width: 150px; background: rgba(0, 225, 255, 0.1); border-radius: 4px; overflow: hidden;">
                                     <div class="progress-bar" style="width: 32%; height: 100%; background: var(--neon-green);"></div>
                                 </div>
                             </div>
-                            <div style="font-size: 1rem; color: white;">32%</div>
+                            <div style="font-size: 1.25rem; color: white; font-weight: 600;">32%</div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-end">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.25rem;">Memory</div>
-                                <div class="progress" style="height: 5px; width: 100px; background: rgba(0, 225, 255, 0.1); border-radius: 5px; overflow: hidden;">
+                                <div style="font-size: 1rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">Memory</div>
+                                <div class="progress" style="height: 8px; width: 150px; background: rgba(0, 225, 255, 0.1); border-radius: 4px; overflow: hidden;">
                                     <div class="progress-bar" style="width: 64%; height: 100%; background: var(--neon-blue);"></div>
                                 </div>
                             </div>
-                            <div style="font-size: 1rem; color: white;">64%</div>
+                            <div style="font-size: 1.25rem; color: white; font-weight: 600;">64%</div>
                         </div>
                     </div>
                 </div>
